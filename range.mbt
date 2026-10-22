@@ -78,15 +78,13 @@ pub fn Range::is_any(self : Range) -> Bool {
 pub fn Range::parse(
   s : String,
   syntax~ : Syntax = Syntax::npm(),
-) -> Result[Range, SemverError] {
-  Ok(parse_range_full(s, syntax)) catch {
-    ParseFail(e) => Err(e)
-  }
+) -> Range raise Refused {
+  parse_range_full(s, syntax)
 }
 
 ///|
-/// Parse with the given grammar, raising `ParseFail` when it does not fit.
-fn parse_range_full(s : String, syn : Syntax) -> Range raise ParseFail {
+/// Parse with the given grammar, raising `Refused` when it does not fit.
+fn parse_range_full(s : String, syn : Syntax) -> Range raise Refused {
   let cur = Cursor::new(s)
   if syn.trim {
     cur.skip_spaces()
@@ -139,7 +137,7 @@ fn parse_range_full(s : String, syn : Syntax) -> Range raise ParseFail {
 fn parse_comparator_set(
   cur : Cursor,
   syn : Syntax,
-) -> ComparatorSet raise ParseFail {
+) -> ComparatorSet raise Refused {
   let tokens : Array[Token] = []
   while true {
     while true {
@@ -255,7 +253,7 @@ fn parse_comparator_token(
   cur : Cursor,
   tok : Token,
   syn : Syntax,
-) -> Array[Comparator] raise ParseFail {
+) -> Array[Comparator] raise Refused {
   let sub = cur.sub(tok.start, tok.end)
   let op = detect_operator(sub, syn)
   sub.skip_spaces()
@@ -275,7 +273,7 @@ fn parse_partial_token(
   cur : Cursor,
   tok : Token,
   syn : Syntax,
-) -> Partial raise ParseFail {
+) -> Partial raise Refused {
   let sub = cur.sub(tok.start, tok.end)
   match sub.peek() {
     Some('>') | Some('<') | Some('=') | Some('^') | Some('~') | Some('!') =>
@@ -302,7 +300,7 @@ fn parse_partial_token(
 }
 
 ///|
-fn detect_operator(cur : Cursor, syn : Syntax) -> TokenOp raise ParseFail {
+fn detect_operator(cur : Cursor, syn : Syntax) -> TokenOp raise Refused {
   match cur.peek() {
     Some('>') => {
       cur.bump()
@@ -374,7 +372,7 @@ priv struct Partial {
 }
 
 ///|
-fn parse_partial_at(cur : Cursor, syn : Syntax) -> Partial raise ParseFail {
+fn parse_partial_at(cur : Cursor, syn : Syntax) -> Partial raise Refused {
   let start = cur.pos
   if syn.allow_v_prefix {
     match cur.peek() {
@@ -463,10 +461,7 @@ fn is_wild_segment(seg : @bigint.BigInt?) -> Bool {
 }
 
 ///|
-fn parse_segment(
-  cur : Cursor,
-  what : String,
-) -> @bigint.BigInt? raise ParseFail {
+fn parse_segment(cur : Cursor, what : String) -> @bigint.BigInt? raise Refused {
   match cur.peek() {
     Some(c) =>
       if is_wildcard(c) {
@@ -591,7 +586,7 @@ fn desugar(
   p : Partial,
   syn : Syntax,
   pos : Int32,
-) -> Array[Comparator] raise ParseFail {
+) -> Array[Comparator] raise Refused {
   let out : Array[Comparator] = []
   let wl = p.wild_level()
   let op = match op {
@@ -910,8 +905,7 @@ pub impl @json.FromJson for Range with fn from_json(
   } else {
     raise @json.JsonDecodeError((path, "moonsver: a range must be a string"))
   }
-  match Range::parse(s) {
-    Ok(r) => r
-    Err(e) => raise @json.JsonDecodeError((path, "moonsver: " + e.to_string()))
+  Range::parse(s) catch {
+    e => raise @json.JsonDecodeError((path, "moonsver: " + e.to_string()))
   }
 }

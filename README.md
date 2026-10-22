@@ -56,31 +56,30 @@ import {
 
 ```moonbit
 ///|
-fn demo() -> Unit {
+fn demo() -> Unit raise @moonsver.Refused {
   // Parsing and printing
-  let v = @moonsver.Version::parse("1.2.3-alpha.1+build.5").unwrap()
+  let v = @moonsver.Version::parse("1.2.3-alpha.1+build.5")
   println(v.to_string())      // 1.2.3-alpha.1+build.5
   println(v.core_string())    // 1.2.3
   println(v.is_prerelease())  // true
 
   // Precedence (§11; build metadata stays out of it)
-  let a = @moonsver.Version::parse("1.0.0-alpha").unwrap()
-  let b = @moonsver.Version::parse("1.0.0").unwrap()
+  let a = @moonsver.Version::parse("1.0.0-alpha")
+  let b = @moonsver.Version::parse("1.0.0")
   println(a.precedence_cmp(b))  // -1
 
   // Ranges
-  let r = @moonsver.Range::parse("^1.2.3").unwrap()
+  let r = @moonsver.Range::parse("^1.2.3")
   println(r.to_string())        // >=1.2.3, <2.0.0
-  println(r.satisfies(@moonsver.Version::parse("1.9.0").unwrap()))  // true
-  println(r.satisfies(@moonsver.Version::parse("2.0.0").unwrap()))  // false
+  println(r.satisfies(@moonsver.Version::parse("1.9.0")))  // true
+  println(r.satisfies(@moonsver.Version::parse("2.0.0")))  // false
 
   // Bumps
-  println(@moonsver.Version::parse("1.2.3").unwrap().inc(@moonsver.Major).to_string())  // 2.0.0
+  println(@moonsver.Version::parse("1.2.3").inc(@moonsver.Major).to_string())  // 2.0.0
 }
 ```
 
-`unwrap()` is there to keep the example short. In real code, match on the result or use
-`try` — the error carries a category, a message and the character position.
+Input that does not parse raises `Refused`, which says what was wrong and where.
 
 ## API
 
@@ -88,7 +87,7 @@ fn demo() -> Unit {
 
 | Method | What it does |
 | --- | --- |
-| `Version::parse(s, syntax?)` | Parse, returning `Result[Version, SemverError]`; npm grammar by default |
+| `Version::parse(s, syntax?)` | Parse, raising `Refused`; npm grammar by default |
 | `Version::new(major, minor, patch)` | Build from three `Int`s |
 | `Version::from_bigint(major, minor, patch)` | Build from three `BigInt`s |
 | `major()` / `minor()` / `patch()` | The numbers, as `BigInt` |
@@ -127,7 +126,7 @@ miss:
 
 | Method | What it does |
 | --- | --- |
-| `Range::parse(s, syntax?)` | Parse, returning `Result[Range, SemverError]` |
+| `Range::parse(s, syntax?)` | Parse, raising `Refused` |
 | `Range::any()` | Any version (`*`) |
 | `satisfies(version)` / `satisfies_with(version, policy)` | Does the version fit? |
 | `max_satisfying(versions)` / `min_satisfying(versions)` | The extremes that fit |
@@ -143,14 +142,14 @@ and disjuncts with ` || `.
 
 ### `satisfies(version, range, syntax?)`
 
-A one-liner for two strings, returning `Result[Bool, SemverError]`.
+A one-liner for two strings, raising `Refused` when either does not parse.
 
 ### Errors
 
-`SemverError` carries `kind()` (an `ErrorKind`), `message()` and `position()` (a character
-index). The kinds are `EmptyInput`, `UnexpectedChar`, `UnexpectedEnd`, `InvalidNumber`,
-`LeadingZero`, `EmptyIdentifier`, `InvalidIdentifier`, `UnsupportedSyntax` and
-`InvalidRange`.
+`Refused` names what was wrong: `Empty`, `Unexpected`, `Truncated`, `Number`,
+`LeadingZero`, `EmptyIdentifier`, `Identifier`, `Unsupported` or `Range`. Each carries
+`at`, the character index of the first offending character, and a message; `at()` and
+`message()` read them without matching.
 
 ## Grammar settings (`Syntax`)
 
@@ -281,7 +280,7 @@ failures exit non-zero with the detail on stderr.
 can go straight into config files or API responses:
 
 ```moonbit
-let j = @json.to_json(@moonsver.Range::parse("^1.2.3").unwrap())
+let j = @json.to_json(@moonsver.Range::parse("^1.2.3"))
 // Json::string(">=1.2.3, <2.0.0")
 ```
 

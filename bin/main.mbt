@@ -105,17 +105,15 @@ fn version_json(input : String, v : @moonsver.Version) -> Json {
 
 ///|
 fn parse_one(input : String, syntax : @moonsver.Syntax) -> @moonsver.Version {
-  match @moonsver.Version::parse(input, syntax~) {
-    Ok(v) => v
-    Err(e) => die("could not parse \{input}: \{e}")
+  @moonsver.Version::parse(input, syntax~) catch {
+    e => die("could not parse \{input}: \{e}")
   }
 }
 
 ///|
 fn range_of(input : String, syntax : @moonsver.Syntax) -> @moonsver.Range {
-  match @moonsver.Range::parse(input, syntax~) {
-    Ok(r) => r
-    Err(e) => die("could not parse the range \{input}: \{e}")
+  @moonsver.Range::parse(input, syntax~) catch {
+    e => die("could not parse the range \{input}: \{e}")
   }
 }
 

@@ -119,14 +119,12 @@ pub fn Version::core_string(self : Version) -> String {
 pub fn Version::parse(
   s : String,
   syntax~ : Syntax = Syntax::npm(),
-) -> Result[Version, SemverError] {
-  Ok(parse_version_full(s, syntax)) catch {
-    ParseFail(e) => Err(e)
-  }
+) -> Version raise Refused {
+  parse_version_full(s, syntax)
 }
 
 ///|
-fn parse_version_full(s : String, syn : Syntax) -> Version raise ParseFail {
+fn parse_version_full(s : String, syn : Syntax) -> Version raise Refused {
   let cur = Cursor::new(s)
   if syn.trim {
     cur.skip_spaces()
@@ -149,7 +147,7 @@ fn parse_version_full(s : String, syn : Syntax) -> Version raise ParseFail {
 }
 
 ///|
-fn parse_version_at(cur : Cursor, syn : Syntax) -> Version raise ParseFail {
+fn parse_version_at(cur : Cursor, syn : Syntax) -> Version raise Refused {
   if syn.allow_v_prefix {
     match cur.peek() {
       Some('v') | Some('V') => cur.bump()
@@ -208,7 +206,7 @@ fn parse_version_at(cur : Cursor, syn : Syntax) -> Version raise ParseFail {
 
 ///|
 /// Parse a numeric component: decimal digits, no leading zero unless the value is `0`.
-fn parse_number(cur : Cursor, what : String) -> @bigint.BigInt raise ParseFail {
+fn parse_number(cur : Cursor, what : String) -> @bigint.BigInt raise Refused {
   let start = cur.pos
   while true {
     match cur.peek() {
@@ -228,7 +226,7 @@ fn parse_number(cur : Cursor, what : String) -> @bigint.BigInt raise ParseFail {
 
 ///|
 /// Parse the prerelease identifiers after `-` (the `-` is already consumed).
-fn parse_prerelease_ids(cur : Cursor) -> Array[Identifier] raise ParseFail {
+fn parse_prerelease_ids(cur : Cursor) -> Array[Identifier] raise Refused {
   let ids : Array[Identifier] = []
   while true {
     let start = cur.pos
@@ -254,7 +252,7 @@ fn parse_prerelease_ids(cur : Cursor) -> Array[Identifier] raise ParseFail {
 
 ///|
 /// Parse the build metadata identifiers after `+` (the `+` is already consumed).
-fn parse_build_ids(cur : Cursor) -> Array[String] raise ParseFail {
+fn parse_build_ids(cur : Cursor) -> Array[String] raise Refused {
   let ids : Array[String] = []
   while true {
     let start = cur.pos
@@ -286,7 +284,7 @@ fn parse_identifier(
   text : String,
   is_prerelease : Bool,
   position : Int32,
-) -> Identifier raise ParseFail {
+) -> Identifier raise Refused {
   let numeric = text.all(fn(c) { is_digit(c) })
   if numeric {
     if is_prerelease && text.length() > 1 && text.get_char(0) == Some('0') {
@@ -478,8 +476,7 @@ pub impl @json.FromJson for Version with fn from_json(
   } else {
     raise @json.JsonDecodeError((path, "moonsver: a version must be a string"))
   }
-  match Version::parse(s) {
-    Ok(v) => v
-    Err(e) => raise @json.JsonDecodeError((path, "moonsver: " + e.to_string()))
+  Version::parse(s) catch {
+    e => raise @json.JsonDecodeError((path, "moonsver: " + e.to_string()))
   }
 }

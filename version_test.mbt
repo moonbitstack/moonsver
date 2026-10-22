@@ -4,9 +4,9 @@ fn parse_ok(
   s : String,
   syntax~ : @moonsver.Syntax = @moonsver.Syntax::npm(),
 ) -> @moonsver.Version raise {
-  match @moonsver.Version::parse(s, syntax~) {
-    Ok(v) => v
-    Err(e) => fail("expected a clean parse, got \{e} for \{s}")
+  match attempt(() => @moonsver.Version::parse(s, syntax~)) {
+    Parsed(v) => v
+    Failed(e) => fail("expected a clean parse, got \{e} for \{s}")
   }
 }
 
@@ -15,9 +15,9 @@ fn parse_err(
   s : String,
   syntax~ : @moonsver.Syntax = @moonsver.Syntax::npm(),
 ) -> Unit raise {
-  match @moonsver.Version::parse(s, syntax~) {
-    Ok(v) => fail("expected \{s} to be rejected, got \{v}")
-    Err(_) => ()
+  match attempt(() => @moonsver.Version::parse(s, syntax~)) {
+    Parsed(v) => fail("expected \{s} to be rejected, got \{v}")
+    Failed(_) => ()
   }
 }
 
@@ -184,24 +184,24 @@ test "version: accessors" {
 
 ///|
 test "version: error kinds and positions" {
-  match @moonsver.Version::parse("1.02.3") {
-    Ok(_) => fail("should have been rejected")
-    Err(e) => {
-      assert_eq(e.kind(), @moonsver.LeadingZero)
-      assert_eq(e.position(), 2)
+  match attempt(() => @moonsver.Version::parse("1.02.3")) {
+    Parsed(_) => fail("should have been rejected")
+    Failed(e) => {
+      assert_true(e is LeadingZero(_, ..))
+      assert_eq(e.at(), 2)
     }
   }
-  match @moonsver.Version::parse("1.2.3-") {
-    Ok(_) => fail("should have been rejected")
-    Err(e) => assert_eq(e.kind(), @moonsver.EmptyIdentifier)
+  match attempt(() => @moonsver.Version::parse("1.2.3-")) {
+    Parsed(_) => fail("should have been rejected")
+    Failed(e) => assert_true(e is EmptyIdentifier(_, ..))
   }
-  match @moonsver.Version::parse("1.2") {
-    Ok(_) => fail("should have been rejected")
-    Err(e) => assert_eq(e.kind(), @moonsver.UnexpectedEnd)
+  match attempt(() => @moonsver.Version::parse("1.2")) {
+    Parsed(_) => fail("should have been rejected")
+    Failed(e) => assert_true(e is Truncated(_, ..))
   }
-  match @moonsver.Version::parse("1.2.3.4") {
-    Ok(_) => fail("should have been rejected")
-    Err(e) => assert_eq(e.position(), 5)
+  match attempt(() => @moonsver.Version::parse("1.2.3.4")) {
+    Parsed(_) => fail("should have been rejected")
+    Failed(e) => assert_eq(e.at(), 5)
   }
 }
 

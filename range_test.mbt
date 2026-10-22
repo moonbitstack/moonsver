@@ -3,9 +3,9 @@ fn range_ok(
   s : String,
   syntax~ : @moonsver.Syntax = @moonsver.Syntax::npm(),
 ) -> @moonsver.Range raise {
-  match @moonsver.Range::parse(s, syntax~) {
-    Ok(r) => r
-    Err(e) => fail("expected a clean parse, got \{e} for \{s}")
+  match attempt(() => @moonsver.Range::parse(s, syntax~)) {
+    Parsed(r) => r
+    Failed(e) => fail("expected a clean parse, got \{e} for \{s}")
   }
 }
 
@@ -14,9 +14,9 @@ fn range_err(
   s : String,
   syntax~ : @moonsver.Syntax = @moonsver.Syntax::npm(),
 ) -> Unit raise {
-  match @moonsver.Range::parse(s, syntax~) {
-    Ok(r) => fail("expected \{s} to be rejected, got \{r}")
-    Err(_) => ()
+  match attempt(() => @moonsver.Range::parse(s, syntax~)) {
+    Parsed(r) => fail("expected \{s} to be rejected, got \{r}")
+    Failed(_) => ()
   }
 }
 
@@ -39,9 +39,9 @@ fn sat(
   range : String,
   syntax~ : @moonsver.Syntax = @moonsver.Syntax::npm(),
 ) -> Bool raise {
-  match @moonsver.satisfies(version, range, syntax~) {
-    Ok(b) => b
-    Err(e) =>
+  match attempt(() => @moonsver.satisfies(version, range, syntax~)) {
+    Parsed(b) => b
+    Failed(e) =>
       fail("satisfaction check failed: \{version} against \{range}: \{e}")
   }
 }
@@ -250,13 +250,16 @@ test "range: structural errors" {
   // npm reads an empty side as "any version", so "||" is fine
   assert_true(range_ok("||").is_any())
   range_err("||", syntax=@moonsver.Syntax::strict())
-  match @moonsver.Range::parse("1.2.3.4") {
-    Ok(_) => fail("should have been rejected")
-    Err(e) => assert_eq(e.kind(), @moonsver.InvalidRange)
+  match attempt(() => @moonsver.Range::parse("1.2.3.4")) {
+    Parsed(_) => fail("should have been rejected")
+    Failed(e) => assert_true(e is Range(_, ..))
   }
-  match @moonsver.Range::parse("^1.2.3", syntax=@moonsver.Syntax::strict()) {
-    Ok(_) => fail("should have been rejected")
-    Err(e) => assert_eq(e.kind(), @moonsver.UnsupportedSyntax)
+  match
+    attempt(() => {
+      @moonsver.Range::parse("^1.2.3", syntax=@moonsver.Syntax::strict())
+    }) {
+    Parsed(_) => fail("should have been rejected")
+    Failed(e) => assert_true(e is Unsupported(_, ..))
   }
 }
 

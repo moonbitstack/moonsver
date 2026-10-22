@@ -129,14 +129,6 @@ pub fn satisfies(
   version : String,
   range : String,
   syntax~ : Syntax = Syntax::npm(),
-) -> Result[Bool, SemverError] {
-  let v = match Version::parse(version, syntax~) {
-    Ok(v) => v
-    Err(e) => return Err(e)
-  }
-  let r = match Range::parse(range, syntax~) {
-    Ok(r) => r
-    Err(e) => return Err(e)
-  }
-  Ok(r.satisfies(v))
+) -> Bool raise Refused {
+  Range::parse(range, syntax~).satisfies(Version::parse(version, syntax~))
 }
