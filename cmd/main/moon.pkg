@@ -1,0 +1,6 @@
+import {
+  "Lfan-ke/moonsver",
+  "moonbitlang/core/env",
+}
+
+pkgtype(kind: "executable")
