@@ -1,0 +1,266 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbitstack/moonsver"
+
+import {
+  "moonbitlang/core/bigint",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn satisfies(String, String, syntax? : Syntax) -> Result[Bool, SemverError]
+
+// Errors
+
+// Types and methods
+pub(all) struct Comparator {
+  op : Op
+  version : Version
+}
+pub fn Comparator::equal(Self, Self) -> Bool
+pub fn Comparator::not_equal(Self, Self) -> Bool
+pub fn Comparator::output(Self, &Logger) -> Unit
+pub fn Comparator::to_repr(Self) -> @debug.Repr
+pub fn Comparator::to_string(Self) -> String
+pub impl Eq for Comparator
+pub impl Show for Comparator
+pub impl @debug.Debug for Comparator
+
+pub(all) struct ComparatorSet {
+  comparators : Array[Comparator]
+}
+pub fn ComparatorSet::equal(Self, Self) -> Bool
+pub fn ComparatorSet::not_equal(Self, Self) -> Bool
+pub fn ComparatorSet::output(Self, &Logger) -> Unit
+pub fn ComparatorSet::to_string(Self) -> String
+pub impl Eq for ComparatorSet
+pub impl Show for ComparatorSet
+
+pub(all) enum DefaultOp {
+  Exact
+  Caret
+  Tilde
+}
+pub fn DefaultOp::equal(Self, Self) -> Bool
+pub fn DefaultOp::not_equal(Self, Self) -> Bool
+pub impl Eq for DefaultOp
+
+pub(all) enum ErrorKind {
+  EmptyInput
+  UnexpectedChar
+  UnexpectedEnd
+  InvalidNumber
+  LeadingZero
+  EmptyIdentifier
+  InvalidIdentifier
+  UnsupportedSyntax
+  InvalidRange
+}
+pub fn ErrorKind::equal(Self, Self) -> Bool
+pub fn ErrorKind::not_equal(Self, Self) -> Bool
+pub fn ErrorKind::to_repr(Self) -> @debug.Repr
+pub impl Eq for ErrorKind
+pub impl @debug.Debug for ErrorKind
+
+pub(all) enum Identifier {
+  Num(@bigint.BigInt)
+  Alpha(String)
+}
+pub fn Identifier::alpha(String) -> Self
+pub fn Identifier::as_bigint(Self) -> @bigint.BigInt?
+pub fn Identifier::as_int(Self) -> Int32?
+pub fn Identifier::compare(Self, Self) -> Int32
+pub fn Identifier::equal(Self, Self) -> Bool
+pub fn Identifier::hash(Self) -> Int32
+pub fn Identifier::hash_combine(Self, Hasher) -> Unit
+pub fn Identifier::is_numeric(Self) -> Bool
+pub fn Identifier::not_equal(Self, Self) -> Bool
+pub fn Identifier::numeric(Int32) -> Self
+pub fn Identifier::op_ge(Self, Self) -> Bool
+pub fn Identifier::op_gt(Self, Self) -> Bool
+pub fn Identifier::op_le(Self, Self) -> Bool
+pub fn Identifier::op_lt(Self, Self) -> Bool
+pub fn Identifier::output(Self, &Logger) -> Unit
+pub fn Identifier::to_repr(Self) -> @debug.Repr
+pub fn Identifier::to_string(Self) -> String
+pub impl Compare for Identifier
+pub impl Eq for Identifier
+pub impl Hash for Identifier
+pub impl Show for Identifier
+pub impl @debug.Debug for Identifier
+
+pub(all) enum Op {
+  Eq
+  Ne
+  Gt
+  Ge
+  Lt
+  Le
+}
+pub fn Op::equal(Self, Self) -> Bool
+pub fn Op::not_equal(Self, Self) -> Bool
+pub fn Op::output(Self, &Logger) -> Unit
+pub fn Op::to_repr(Self) -> @debug.Repr
+pub fn Op::to_string(Self) -> String
+pub impl Eq for Op
+pub impl Show for Op
+pub impl @debug.Debug for Op
+
+pub(all) enum PrereleasePolicy {
+  SameTuple
+  Always
+  Never
+}
+pub fn PrereleasePolicy::equal(Self, Self) -> Bool
+pub fn PrereleasePolicy::not_equal(Self, Self) -> Bool
+pub fn PrereleasePolicy::to_repr(Self) -> @debug.Repr
+pub impl Eq for PrereleasePolicy
+pub impl @debug.Debug for PrereleasePolicy
+
+pub struct Range {
+  sets : Array[ComparatorSet]
+  policy : PrereleasePolicy
+}
+pub fn Range::any() -> Self
+pub fn Range::equal(Self, Self) -> Bool
+pub fn Range::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Range::is_any(Self) -> Bool
+pub fn Range::max_satisfying(Self, Array[Version]) -> Version?
+pub fn Range::min_satisfying(Self, Array[Version]) -> Version?
+pub fn Range::not_equal(Self, Self) -> Bool
+pub fn Range::output(Self, &Logger) -> Unit
+pub fn Range::parse(String, syntax? : Syntax) -> Result[Self, SemverError]
+pub fn Range::policy(Self) -> PrereleasePolicy
+pub fn Range::satisfies(Self, Version) -> Bool
+pub fn Range::satisfies_with(Self, Version, PrereleasePolicy) -> Bool
+pub fn Range::satisfying(Self, Array[Version]) -> Array[Version]
+pub fn Range::sets(Self) -> ArrayView[ComparatorSet]
+pub fn Range::to_json(Self) -> Json
+pub fn Range::to_repr(Self) -> @debug.Repr
+pub fn Range::to_string(Self) -> String
+pub impl Eq for Range
+pub impl Show for Range
+pub impl ToJson for Range
+pub impl @debug.Debug for Range
+pub impl @json.FromJson for Range
+
+pub(all) enum Release {
+  Major
+  Minor
+  Patch
+  PreMajor
+  PreMinor
+  PrePatch
+  Prerelease
+  Stable
+}
+pub fn Release::output(Self, &Logger) -> Unit
+pub fn Release::parse(String) -> Self?
+pub fn Release::to_repr(Self) -> @debug.Repr
+pub fn Release::to_string(Self) -> String
+pub impl Show for Release
+pub impl @debug.Debug for Release
+
+pub(all) struct SemverError {
+  kind : ErrorKind
+  message : String
+  position : Int32
+}
+pub fn SemverError::equal(Self, Self) -> Bool
+pub fn SemverError::kind(Self) -> ErrorKind
+pub fn SemverError::message(Self) -> String
+pub fn SemverError::not_equal(Self, Self) -> Bool
+pub fn SemverError::output(Self, &Logger) -> Unit
+pub fn SemverError::position(Self) -> Int32
+pub fn SemverError::to_repr(Self) -> @debug.Repr
+pub fn SemverError::to_string(Self) -> String
+pub impl Eq for SemverError
+pub impl Show for SemverError
+pub impl @debug.Debug for SemverError
+
+pub(all) struct Syntax {
+  allow_v_prefix : Bool
+  allow_equals_prefix : Bool
+  allow_build_metadata : Bool
+  trim : Bool
+  default_op : DefaultOp
+  tilde_bump : TildeBump
+  allow_caret : Bool
+  allow_tilde : Bool
+  allow_ne : Bool
+  allow_or : Bool
+  allow_hyphen_range : Bool
+  allow_xrange : Bool
+  allow_empty : Bool
+  prerelease_policy : PrereleasePolicy
+}
+pub fn Syntax::cargo() -> Self
+pub fn Syntax::default() -> Self
+pub fn Syntax::equal(Self, Self) -> Bool
+pub fn Syntax::from_name(String) -> Self?
+pub fn Syntax::name(Self) -> String?
+pub fn Syntax::not_equal(Self, Self) -> Bool
+pub fn Syntax::npm() -> Self
+pub fn Syntax::output(Self, &Logger) -> Unit
+pub fn Syntax::ruby() -> Self
+pub fn Syntax::strict() -> Self
+pub fn Syntax::to_string(Self) -> String
+pub impl Default for Syntax
+pub impl Eq for Syntax
+pub impl Show for Syntax
+
+pub(all) enum TildeBump {
+  Patch
+  LastSpecified
+}
+pub fn TildeBump::equal(Self, Self) -> Bool
+pub fn TildeBump::not_equal(Self, Self) -> Bool
+pub impl Eq for TildeBump
+
+pub struct Version {
+  major : @bigint.BigInt
+  minor : @bigint.BigInt
+  patch : @bigint.BigInt
+  pre : Array[Identifier]
+  build : Array[String]
+}
+pub fn Version::build(Self) -> ArrayView[String]
+pub fn Version::compare(Self, Self) -> Int32
+pub fn Version::core(Self) -> Self
+pub fn Version::core_string(Self) -> String
+pub fn Version::equal(Self, Self) -> Bool
+pub fn Version::from_bigint(@bigint.BigInt, @bigint.BigInt, @bigint.BigInt) -> Self
+pub fn Version::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Version::hash(Self) -> Int32
+pub fn Version::hash_combine(Self, Hasher) -> Unit
+pub fn Version::inc(Self, Release) -> Self
+pub fn Version::is_prerelease(Self) -> Bool
+pub fn Version::is_stable(Self) -> Bool
+pub fn Version::major(Self) -> @bigint.BigInt
+pub fn Version::minor(Self) -> @bigint.BigInt
+pub fn Version::new(Int32, Int32, Int32) -> Self
+pub fn Version::not_equal(Self, Self) -> Bool
+pub fn Version::op_ge(Self, Self) -> Bool
+pub fn Version::op_gt(Self, Self) -> Bool
+pub fn Version::op_le(Self, Self) -> Bool
+pub fn Version::op_lt(Self, Self) -> Bool
+pub fn Version::output(Self, &Logger) -> Unit
+pub fn Version::parse(String, syntax? : Syntax) -> Result[Self, SemverError]
+pub fn Version::patch(Self) -> @bigint.BigInt
+pub fn Version::precedence_cmp(Self, Self) -> Int32
+pub fn Version::prerelease(Self) -> ArrayView[Identifier]
+pub fn Version::same_core(Self, Self) -> Bool
+pub fn Version::to_json(Self) -> Json
+pub fn Version::to_repr(Self) -> @debug.Repr
+pub fn Version::to_string(Self) -> String
+pub impl Compare for Version
+pub impl Eq for Version
+pub impl Hash for Version
+pub impl Show for Version
+pub impl ToJson for Version
+pub impl @debug.Debug for Version
+pub impl @json.FromJson for Version
+
+// Type aliases
+
+// Traits

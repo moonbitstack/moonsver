@@ -27,11 +27,11 @@ the grammar parameters in moonregex.
 
 ## Using it
 
-In your `moon.pkg` (module `Lfan-ke/moonsver`, package alias `@moonsver`):
+In your `moon.pkg` (module `moonbitstack/moonsver`, package alias `@moonsver`):
 
 ```
 import {
-  "Lfan-ke/moonsver",
+  "moonbitstack/moonsver",
 }
 ```
 
@@ -46,11 +46,11 @@ members = [
 
 // moon.mod
 import {
-  "Lfan-ke/moonsver@0.1.0",
+  "moonbitstack/moonsver@0.1.0",
 }
 ```
 
-(Not on mooncakes yet; once it is, `moon add Lfan-ke/moonsver` will do the job.)
+(Not on mooncakes yet; once it is, `moon add moonbitstack/moonsver` will do the job.)
 
 ## Quick start
 
@@ -244,16 +244,16 @@ break the round trip.
 ## CLI
 
 ```bash
-moon run cmd/main -- parse 1.2.3 v2.0.0-rc.1+build
-moon run cmd/main -- compare 1.0.0-rc.1 1.0.0
-moon run cmd/main -- sort 2.0.0 1.0.0-beta 1.0.0 0.9.9
-moon run cmd/main -- bump prerelease 1.2.3-alpha.1     # 1.2.3-alpha.2
-moon run cmd/main -- range "^0.2.3"                    # >=0.2.3, <0.3.0
-moon run cmd/main -- range --syntax cargo 1.2.3        # >=1.2.3, <2.0.0
-moon run cmd/main -- range --syntax ruby "~> 1.2"      # >=1.2.0, <2.0.0
-moon run cmd/main -- satisfies 1.9.0 "^1.2.3"          # true
-moon run cmd/main -- max "^1.2.0" 1.0.0 1.2.3 1.5.0    # 1.5.0
-moon run cmd/main -- parse --json 1.2.3-alpha.1
+moon run bin -- parse 1.2.3 v2.0.0-rc.1+build
+moon run bin -- compare 1.0.0-rc.1 1.0.0
+moon run bin -- sort 2.0.0 1.0.0-beta 1.0.0 0.9.9
+moon run bin -- bump prerelease 1.2.3-alpha.1     # 1.2.3-alpha.2
+moon run bin -- range "^0.2.3"                    # >=0.2.3, <0.3.0
+moon run bin -- range --syntax cargo 1.2.3        # >=1.2.3, <2.0.0
+moon run bin -- range --syntax ruby "~> 1.2"      # >=1.2.0, <2.0.0
+moon run bin -- satisfies 1.9.0 "^1.2.3"          # true
+moon run bin -- max "^1.2.0" 1.0.0 1.2.3 1.5.0    # 1.5.0
+moon run bin -- parse --json 1.2.3-alpha.1
 ```
 
 `parse --json` prints (the numbers are strings, so nothing is lost):

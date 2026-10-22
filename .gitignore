@@ -1,12 +1,5 @@
-# MoonBit 构建产物
+.*
+!.git*
+!.moonignore
 _build/
-.mooncakes/
-.moon-lock
-
-# 编辑器
-.vscode/
-.idea/
-*.swp
-
-# 生成文件
-*.generated.mbti
+target/

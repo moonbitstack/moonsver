@@ -1,16 +1,15 @@
-// moonsver — a SemVer 2.0.0 implementation in MoonBit
-//
-// Parsing, printing, precedence and version ranges.
-// Range grammar is parameterised through `Syntax` (npm / Cargo / Ruby / strict).
-
-name = "Lfan-ke/moonsver"
+name = "moonbitstack/moonsver"
 
 version = "0.1.0"
 
 readme = "README.md"
 
-description = "SemVer 2.0.0 parsing, printing, precedence and version ranges, with pluggable range grammars"
+repository = "https://github.com/moonbitstack/moonsver"
 
-keywords = [ "semver", "version", "range", "parser", "npm", "cargo" ]
+license = "Apache-2.0"
+
+description = "Semantic Versioning 2.0.0: parsing, printing, precedence, bumping and version ranges, with the range grammar of npm, Cargo, Ruby or the strict spec as a parameter."
+
+keywords = [ "semver", "version", "range", "parser", "npm", "cargo", "moonbit" ]
 
 preferred_target = "wasm-gc"
