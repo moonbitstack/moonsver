@@ -11,5 +11,3 @@ license = "Apache-2.0"
 description = "Semantic Versioning 2.0.0: parsing, printing, precedence, bumping and version ranges, with the range grammar of npm, Cargo, Ruby or the strict spec as a parameter."
 
 keywords = [ "semver", "version", "range", "parser", "npm", "cargo", "moonbit" ]
-
-preferred_target = "wasm-gc"
