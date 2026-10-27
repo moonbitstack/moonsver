@@ -7,7 +7,7 @@
 <meta name="description" content="Parse, print, compare and constrain semantic versions in MoonBit. Ranges in npm, Cargo, Ruby or the strict grammar, with arbitrary-precision numbers and no dependencies.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>try{var q=new URLSearchParams(location.search).get('theme');var t=q||localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
@@ -18,7 +18,7 @@
   <div class="bar">
     <a class="brand" href="./" aria-label="moonsver home">
       <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1.3" fill="#fff" opacity=".85"/><rect x="10" y="8" width="4" height="13" rx="1.3" fill="#fff" opacity=".95"/><rect x="17" y="3" width="4" height="18" rx="1.3" fill="#fff"/></svg>
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" fill="#fff" opacity=".8"/><rect x="10" y="8" width="4" height="13" rx="1" fill="#fff" opacity=".92"/><rect x="17" y="3" width="4" height="18" rx="1" fill="#fff"/></svg>
       </span>
       <span class="brand-text">
         <span class="brand-name">moonsver</span>
@@ -47,140 +47,175 @@
 </header>
 
 <main id="main">
-  <section class="hero wrap">
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Semantic Versioning 2.0.0 · MoonBit</p>
-        <h1>Every version,<br><span class="grad">in its place.</span></h1>
-        <p class="lede">
-          <strong>moonsver</strong> parses and prints semantic versions, orders them by the
-          spec's precedence, and tests ranges written in npm, Cargo, Ruby or the strict
-          grammar. The numbers are arbitrary precision. Nothing else is required.
-        </p>
-        <div class="cta">
-          <a class="btn primary" href="play.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3Z"/></svg>
-            Open the playground
-          </a>
-          <a class="btn ghost" href="guide.html">Read the guide</a>
-          <a class="btn ghost" href="api.html">API reference</a>
-        </div>
-        <p class="hero-note">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Runs in your browser</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Zero dependencies</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Apache-2.0</span>
-        </p>
+  <section class="hero">
+    <div class="wrap">
+      <div class="spec-strip">
+        <span><b>Semantic Versioning 2.0.0</b> · MoonBit package</span>
+        <span class="strip-right">
+          <span>§11 precedence</span>
+          <span>4 grammars</span>
+          <span>0 dependencies</span>
+        </span>
       </div>
 
-      <div class="version-card" id="vcCard">
-        <div class="vc-head">
-          <span class="ttl">parse · live</span>
-          <span class="dotrow" aria-hidden="true"><i></i><i></i><i></i></span>
-        </div>
-        <div class="vc-body">
-          <div class="field">
-            <span class="prompt" aria-hidden="true">$</span>
-            <input id="verIn" type="text" value="1.2.3-alpha.1+build.5" spellcheck="false" autocomplete="off" aria-label="Version string to parse">
-            <button class="go" id="verGo" type="button">parse</button>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">moonsver</p>
+          <h1>Every version,<br><em>in its place.</em></h1>
+          <p class="lede">
+            <strong>moonsver</strong> reads and prints semantic versions, orders them the way
+            the standard says, and answers whether a version fits a range. Ranges come in
+            four grammars. The numbers are arbitrary precision.
+          </p>
+          <div class="cta">
+            <a class="btn primary" href="play.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3Z"/></svg>
+              Open the playground
+            </a>
+            <a class="btn ghost" href="guide.html">Read the guide</a>
+            <a class="btn ghost" href="api.html">API reference</a>
           </div>
-          <div class="vc-ver" id="vcVer"><span class="core">1.2.3</span><span class="pre">-alpha.1</span><span class="build">+build.5</span></div>
-          <div class="fields">
-            <div class="fld"><span class="k">core</span><span class="v" id="fCore">1.2.3</span></div>
-            <div class="fld"><span class="k">stable</span><span class="v" id="fStable">no</span></div>
-            <div class="fld" style="grid-column:1/-1"><span class="k">prerelease</span><span class="chips" id="fPre"></span></div>
-            <div class="fld" style="grid-column:1/-1"><span class="k">build</span><span class="chips" id="fBuild"></span></div>
+          <ul class="hero-note">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Runs in your browser</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Zero dependencies</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Apache-2.0</li>
+          </ul>
+        </div>
+
+        <div class="stack">
+          <div class="version-card" id="vcCard">
+            <div class="vc-head">
+              <span class="ttl">parse / live</span>
+              <span class="dotrow" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div>
+            <div class="vc-body">
+              <div class="field">
+                <span class="prompt" aria-hidden="true">$</span>
+                <input id="verIn" type="text" value="1.2.3-alpha.1+build.5" spellcheck="false" autocomplete="off" aria-label="Version string to parse">
+                <button class="go" id="verGo" type="button">parse</button>
+              </div>
+              <div class="vc-ver" id="vcVer"><span class="core">1.2.3</span><span class="pre">-alpha.1</span><span class="build">+build.5</span></div>
+              <div class="fields">
+                <div class="fld"><span class="k">core</span><span class="v" id="fCore">1.2.3</span></div>
+                <div class="fld"><span class="k">stable</span><span class="v" id="fStable">no</span></div>
+                <div class="fld" style="grid-column:1/-1"><span class="k">prerelease</span><span class="chips" id="fPre"></span></div>
+                <div class="fld" style="grid-column:1/-1"><span class="k">build</span><span class="chips" id="fBuild"></span></div>
+              </div>
+              <p class="hint" id="vcHint">Parsed by the compiled library · precedence ignores build metadata.</p>
+            </div>
           </div>
-          <p class="hint" id="vcHint">The page calls the library compiled to JavaScript — the same code the package ships.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section wrap">
-    <div class="stats">
-      <div class="stat"><div class="n">§11</div><div class="l">precedence, implemented to the letter</div></div>
-      <div class="stat"><div class="n">4</div><div class="l">range grammars: npm, Cargo, Ruby, strict</div></div>
-      <div class="stat"><div class="n">3</div><div class="l">prerelease policies</div></div>
-      <div class="stat"><div class="n">0</div><div class="l">third-party dependencies</div></div>
-    </div>
-  </section>
-
-  <section class="section wrap">
-    <div class="section-head">
-      <p class="eyebrow">What it does</p>
-      <h2>Six things, done once</h2>
-      <p>A version is a small, strict format. The work is in the edges: leading zeroes, prerelease ordering, build metadata, and the many ways a range can be written.</p>
-    </div>
-    <div class="features">
-      <article class="feature">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg></div>
-        <h3>Arbitrary precision</h3>
-        <p>The three numbers are <code>BigInt</code>. <code>18446744073709551616.0.0</code> parses, prints and compares exactly.</p>
-      </article>
-      <article class="feature">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></svg></div>
-        <h3>One parser, four grammars</h3>
-        <p>npm, Cargo, Ruby and the strict spec are a setting on <code>Syntax</code>, not four forks of the parser.</p>
-      </article>
-      <article class="feature">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5v18h3M16 3h3v18h-3"/></svg></div>
-        <h3>Ranges are structure</h3>
-        <p><code>^1.2.3</code> expands to <code>&gt;=1.2.3, &lt;2.0.0</code>. Read the sets back, or ask which versions fit.</p>
-      </article>
-      <article class="feature">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg></div>
-        <h3>Precedence per §11</h3>
-        <p>Numeric identifiers before alphanumeric, a shorter list below a longer one, build metadata left out.</p>
-      </article>
-      <article class="feature">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6M6 9l6-6 6 6"/></svg></div>
-        <h3>Bumps that match</h3>
-        <p>Major, minor, patch and the prerelease corners that are easy to miss, including <code>1.0.0-pre</code> → <code>1.0.0</code>.</p>
-      </article>
-      <article class="feature">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H7a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M15 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2"/></svg></div>
-        <h3>JSON in and out</h3>
-        <p><code>Version</code> and <code>Range</code> serialise as strings, so they drop straight into config files and API responses.</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="section wrap">
-    <div class="section-head">
-      <p class="eyebrow">One string, four grammars</p>
-      <h2>The same range, read four ways</h2>
-      <p>Ranges are not in the spec, so each ecosystem wrote its own. Type one and see how npm, Cargo, Ruby and the strict grammar each expand it — live, through the compiled library.</p>
-    </div>
-    <div class="panel">
-      <div class="panel-head">
-        <span class="ttl">grammar lens</span>
-        <span class="hint" style="margin:0">Try <code>1.2.3</code>, <code>~1.2</code>, <code>1.2.*</code> or <code>^1.2.3 || ^2</code></span>
+  <section class="section">
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat"><div class="n">§11</div><div class="l">precedence, followed to the letter</div></div>
+        <div class="stat"><div class="n">4</div><div class="l">range grammars: npm, Cargo, Ruby, strict</div></div>
+        <div class="stat"><div class="n">3</div><div class="l">prerelease policies</div></div>
+        <div class="stat"><div class="n">0</div><div class="l">third-party dependencies</div></div>
       </div>
-      <div class="panel-body">
-        <div class="control" style="margin-bottom:14px">
-          <label for="lensIn">Range expression</label>
-          <input class="input" id="lensIn" type="text" value="1.2.3" spellcheck="false" autocomplete="off">
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What it does</p>
+        <h2>Six things, done once</h2>
+        <p>A version is a small, strict format. The work is in the edges: leading zeroes,
+          prerelease ordering, build metadata, and the many ways a range can be written.</p>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg></div>
+          <h3>Arbitrary precision</h3>
+          <p>The three numbers are <code>BigInt</code>. <code>18446744073709551616.0.0</code> parses, prints and compares exactly.</p>
+        </article>
+        <article class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></svg></div>
+          <h3>One parser, four grammars</h3>
+          <p>npm, Cargo, Ruby and the strict standard are a setting on <code>Syntax</code>, not four forks of the parser.</p>
+        </article>
+        <article class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5v18h3M16 3h3v18h-3"/></svg></div>
+          <h3>Ranges are structure</h3>
+          <p><code>^1.2.3</code> expands to <code>&gt;=1.2.3, &lt;2.0.0</code>. Read the sets back, or ask which versions fit.</p>
+        </article>
+        <article class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg></div>
+          <h3>Precedence per §11</h3>
+          <p>Numeric identifiers before alphanumeric, a shorter list below a longer one, build metadata left out.</p>
+        </article>
+        <article class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6M6 9l6-6 6 6"/></svg></div>
+          <h3>Bumps that match</h3>
+          <p>Major, minor, patch and the prerelease corners that are easy to miss, including <code>1.0.0-pre</code> → <code>1.0.0</code>.</p>
+        </article>
+        <article class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H7a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M15 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2"/></svg></div>
+          <h3>JSON in and out</h3>
+          <p><code>Version</code> and <code>Range</code> serialise as strings, so they drop straight into config files and API responses.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">One string, four grammars</p>
+        <h2>The same range, read four ways</h2>
+        <p>Ranges are not in the standard, so each ecosystem wrote its own. Type one and see
+          how npm, Cargo, Ruby and the strict grammar each expand it — live, through the
+          compiled library.</p>
+      </div>
+      <div class="panel lens-panel">
+        <div class="panel-head">
+          <span class="ttl">grammar lens</span>
+          <span class="hint" style="margin:0">Try <code>1.2.3</code>, <code>~1.2</code>, <code>1.2.*</code> or <code>^1.2.3 || ^2</code></span>
         </div>
-        <div class="lens" id="lens">
-          <div class="lens-row"><span class="syn">npm</span><span class="out" id="lens-npm">=1.2.3</span><span class="mk">default</span></div>
-          <div class="lens-row"><span class="syn">cargo</span><span class="out" id="lens-cargo">>=1.2.3, &lt;2.0.0</span><span class="mk">caret default</span></div>
-          <div class="lens-row"><span class="syn">ruby</span><span class="out" id="lens-ruby">=1.2.3</span><span class="mk">pessimistic</span></div>
-          <div class="lens-row"><span class="syn">strict</span><span class="out" id="lens-strict">=1.2.3</span><span class="mk">spec only</span></div>
+        <div class="panel-body">
+          <div class="control" style="margin-bottom:16px">
+            <label for="lensIn">Range expression</label>
+            <input class="input" id="lensIn" type="text" value="1.2.3" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="lens" id="lens">
+            <div class="lens-row"><span class="syn">npm</span><span class="out" id="lens-npm">=1.2.3</span><span class="mk">default</span></div>
+            <div class="lens-row"><span class="syn">cargo</span><span class="out" id="lens-cargo">&gt;=1.2.3, &lt;2.0.0</span><span class="mk">caret default</span></div>
+            <div class="lens-row"><span class="syn">ruby</span><span class="out" id="lens-ruby">=1.2.3</span><span class="mk">pessimistic</span></div>
+            <div class="lens-row"><span class="syn">strict</span><span class="out" id="lens-strict">=1.2.3</span><span class="mk">standard only</span></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section wrap">
-    <div class="cta" style="justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
-      <div style="max-width:560px">
-        <p class="eyebrow">Playground</p>
-        <h2 style="margin-bottom:8px">Sort a list, test a range</h2>
-        <p class="lede" style="font-size:17px;margin:0">Paste versions, pick a range and a grammar, and watch the version axis light up. Every answer comes from the compiled package.</p>
+  <section class="section">
+    <div class="wrap">
+      <div class="band">
+        <div class="band-copy">
+          <p class="eyebrow">Playground</p>
+          <h2>Sort a list, test a range</h2>
+          <p>Paste versions, pick a range and a grammar, and watch the version axis light up.
+            Every answer comes from the compiled package.</p>
+        </div>
+        <svg class="band-art" viewBox="0 0 240 64" aria-hidden="true" fill="none">
+          <rect x="105" y="27" width="60" height="14" fill="#67c6e3" fill-opacity=".35"/>
+          <line x1="0" y1="40" x2="240" y2="40" stroke="#fff" stroke-opacity=".38"/>
+          <g fill="#fff">
+            <circle cx="15" cy="40" r="3" fill-opacity=".4"/><circle cx="45" cy="40" r="3" fill-opacity=".4"/>
+            <circle cx="75" cy="40" r="3" fill-opacity=".4"/>
+            <circle cx="105" cy="40" r="3.6"/><circle cx="135" cy="40" r="3.6"/><circle cx="165" cy="40" r="3.6"/>
+            <circle cx="195" cy="40" r="3" fill-opacity=".4"/><circle cx="225" cy="40" r="3" fill-opacity=".4"/>
+          </g>
+        </svg>
+        <a class="btn onband" href="play.html">Open the playground
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
       </div>
-      <a class="btn primary" href="play.html">Open the playground
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
     </div>
   </section>
 </main>
@@ -189,7 +224,7 @@
   <div class="wrap foot-grid">
     <div>
       <a class="foot-brand brand" href="./">
-        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1.3" fill="#fff" opacity=".85"/><rect x="10" y="8" width="4" height="13" rx="1.3" fill="#fff" opacity=".95"/><rect x="17" y="3" width="4" height="18" rx="1.3" fill="#fff"/></svg></span>
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" fill="#fff" opacity=".8"/><rect x="10" y="8" width="4" height="13" rx="1" fill="#fff" opacity=".92"/><rect x="17" y="3" width="4" height="18" rx="1" fill="#fff"/></svg></span>
         <b>moonsver</b>
       </a>
       <p class="foot-meta">Semantic Versioning 2.0.0 for MoonBit · Apache-2.0</p>
@@ -237,7 +272,7 @@
       const s = document.createElement("span");
       s.className = "chip" + (alt ? " alt" : "");
       s.textContent = "none";
-      s.style.opacity = ".6";
+      s.style.opacity = ".55";
       el.appendChild(s);
       return;
     }

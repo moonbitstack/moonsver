@@ -7,7 +7,7 @@
 <meta name="description" content="A progressive guide to moonsver: parse and print versions, order them, test ranges in four grammars, choose a prerelease policy, bump, handle errors and move data as JSON.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>try{var q=new URLSearchParams(location.search).get('theme');var t=q||localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
@@ -147,14 +147,16 @@ for s in ["1.2.2", "1.2.3", "1.9.0", "2.0.0", "2.0.0-rc.1"] {
 cargo &gt;=1.2.3, &lt;2.0.0
 ruby =1.2.3
 strict =1.2.3</code></pre></div>
-        <table class="ref-table">
-          <thead><tr><th>Written</th><th>npm</th><th>Cargo</th><th>Ruby</th></tr></thead>
-          <tbody>
-            <tr><td><code>1.2.3</code></td><td><code>=1.2.3</code></td><td><code>&gt;=1.2.3, &lt;2.0.0</code></td><td><code>=1.2.3</code></td></tr>
-            <tr><td><code>~1.2</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td><code>~&gt; 1.2</code> gives <code>&gt;=1.2.0, &lt;2.0.0</code></td></tr>
-            <tr><td><code>1.2.*</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td>not supported</td></tr>
-          </tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="ref-table">
+            <thead><tr><th>Written</th><th>npm</th><th>Cargo</th><th>Ruby</th></tr></thead>
+            <tbody>
+              <tr><td><code>1.2.3</code></td><td><code>=1.2.3</code></td><td><code>&gt;=1.2.3, &lt;2.0.0</code></td><td><code>=1.2.3</code></td></tr>
+              <tr><td><code>~1.2</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td><code>~&gt; 1.2</code> gives <code>&gt;=1.2.0, &lt;2.0.0</code></td></tr>
+              <tr><td><code>1.2.*</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td><code>&gt;=1.2.0, &lt;1.3.0</code></td><td>not supported</td></tr>
+            </tbody>
+          </table>
+        </div>
         <div class="callout"><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span><p>A spelling the grammar does not allow is refused, not guessed at. The strict grammar has no caret, so this call raises <code>this grammar does not support '^'</code>:</p></div>
         <pre><code>let _ = @moonsver.Range::parse("^1.2.3 || ^2",
   syntax=@moonsver.Syntax::strict())</code></pre>
@@ -173,7 +175,7 @@ false</code></pre></div>
         <p><code>SameTuple</code> is the npm and Cargo convention; <code>Always</code> compares a prerelease like any other version; <code>Never</code> keeps a range to stable releases only.</p>
 
         <h2 id="bumps">Bump a version</h2>
-        <p><code>inc</code> takes a <code>Release</code>. The corners follow node-semver's <code>inc()</code>, which is where most hand-written bumpers drift.</p>
+        <p><code>inc</code> takes a <code>Release</code>. The corners are where most hand-written bumpers drift.</p>
         <span class="file">main.mbt</span>
         <pre><code>let cases : Array[(@moonsver.Version, @moonsver.Release)] = [
   (@moonsver.Version::parse("1.0.0-pre"), @moonsver.Major),

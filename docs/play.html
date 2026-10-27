@@ -7,7 +7,7 @@
 <meta name="description" content="Type a list of versions and a range expression, then see which ones satisfy it and how they sort. Runs the moonsver library compiled to JavaScript.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>try{var q=new URLSearchParams(location.search).get('theme');var t=q||localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
@@ -17,7 +17,7 @@
 <header class="site-header">
   <div class="bar">
     <a class="brand" href="./" aria-label="moonsver home">
-      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1.3" fill="#fff" opacity=".85"/><rect x="10" y="8" width="4" height="13" rx="1.3" fill="#fff" opacity=".95"/><rect x="17" y="3" width="4" height="18" rx="1.3" fill="#fff"/></svg></span>
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" fill="#fff" opacity=".8"/><rect x="10" y="8" width="4" height="13" rx="1" fill="#fff" opacity=".92"/><rect x="17" y="3" width="4" height="18" rx="1" fill="#fff"/></svg></span>
       <span class="brand-text"><span class="brand-name">moonsver</span><span class="brand-tag">Semantic Versioning for MoonBit</span></span>
     </a>
     <nav class="topnav" aria-label="Primary">
@@ -38,25 +38,26 @@
 </header>
 
 <main id="main" class="wrap">
-  <div class="page-head" style="padding-top:40px">
+  <div class="page-head" style="padding-top:48px">
     <p class="eyebrow">Playground</p>
-    <h1 style="font-size:clamp(30px,4.4vw,46px)">Sort a list, test a range</h1>
-    <p>Type versions, one per line, and a range expression. Every row is parsed by the library compiled to JavaScript, so the answers are the package's own.</p>
+    <h1>Sort a list, test a range</h1>
+    <p>Type versions, one per line, and a range expression. Every row is parsed by the
+      library compiled to JavaScript, so the answers are the package's own.</p>
   </div>
 
-  <section class="panel" style="margin:22px 0 20px">
+  <section class="panel" style="margin:26px 0 20px">
     <div class="panel-head">
       <span class="ttl">input</span>
-      <div class="lens" style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="caret">^1.2.3</button>
-        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="tilde">~1.2.0</button>
-        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="xrange">1.2.*</button>
-        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="range">&gt;=1.0.0 &lt;2.0.0</button>
-        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="ruby">~&gt; 1.2</button>
+      <div class="presets">
+        <button class="preset" type="button" data-preset="caret">^1.2.3</button>
+        <button class="preset" type="button" data-preset="tilde">~1.2.0</button>
+        <button class="preset" type="button" data-preset="xrange">1.2.*</button>
+        <button class="preset" type="button" data-preset="range">&gt;=1.0.0 &lt;2.0.0</button>
+        <button class="preset" type="button" data-preset="ruby">~&gt; 1.2</button>
       </div>
     </div>
     <div class="panel-body">
-      <div class="demo-grid" style="margin-bottom:14px">
+      <div class="demo-grid" style="margin-bottom:16px">
         <div class="control">
           <label for="rangeIn">Range expression</label>
           <input class="input" id="rangeIn" type="text" value="^1.2.3" spellcheck="false" autocomplete="off">
@@ -67,7 +68,7 @@
             <option value="npm" selected>npm</option>
             <option value="cargo">Cargo</option>
             <option value="ruby">Ruby</option>
-            <option value="strict">strict (spec only)</option>
+            <option value="strict">strict (standard only)</option>
           </select>
         </div>
       </div>
@@ -98,7 +99,7 @@
     <section class="panel">
       <div class="panel-head"><span class="ttl">Sorted, with verdict</span></div>
       <div class="panel-body" style="padding:0">
-        <div class="table-scroll" style="border:0;border-radius:0">
+        <div class="table-scroll">
           <table class="results">
             <thead><tr><th>#</th><th>Version</th><th>Status</th></tr></thead>
             <tbody id="rowsBody"><tr><td colspan="3" style="color:var(--ink-faint)">—</td></tr></tbody>
@@ -109,15 +110,15 @@
     <section class="panel">
       <div class="panel-head"><span class="ttl">Result</span></div>
       <div class="panel-body">
-        <div class="control" style="margin-bottom:10px">
+        <div class="control" style="margin-bottom:14px">
           <label>Newest that satisfies</label>
-          <div class="result" id="maxResult"><span class="rlabel">max satisfying</span><span class="rval" id="maxVal">—</span></div>
+          <div class="result" id="maxResult"><span class="rval" id="maxVal">—</span><span class="rlabel">newest</span></div>
         </div>
         <div class="control">
           <label>Canonical range</label>
           <div class="sig" id="canon" style="margin:0">—</div>
         </div>
-        <div class="control" style="margin-top:12px">
+        <div class="control" style="margin-top:14px">
           <label>Ascending order</label>
           <div class="chips" id="sortedChips"></div>
         </div>
@@ -126,7 +127,7 @@
     </section>
   </div>
 
-  <section class="panel" style="margin-bottom:40px">
+  <section class="panel" style="margin-bottom:44px">
     <div class="panel-head">
       <span class="ttl">One string, four grammars</span>
       <span class="hint" style="margin:0">The same range, read by each preset</span>
@@ -145,7 +146,7 @@
 <footer class="site-footer">
   <div class="wrap foot-grid">
     <div>
-      <a class="foot-brand brand" href="./"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1.3" fill="#fff" opacity=".85"/><rect x="10" y="8" width="4" height="13" rx="1.3" fill="#fff" opacity=".95"/><rect x="17" y="3" width="4" height="18" rx="1.3" fill="#fff"/></svg></span><b>moonsver</b></a>
+      <a class="foot-brand brand" href="./"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" fill="#fff" opacity=".8"/><rect x="10" y="8" width="4" height="13" rx="1" fill="#fff" opacity=".92"/><rect x="17" y="3" width="4" height="18" rx="1" fill="#fff"/></svg></span><b>moonsver</b></a>
       <p class="foot-meta">Semantic Versioning 2.0.0 for MoonBit · Apache-2.0</p>
     </div>
     <nav class="foot-links" aria-label="Footer"><a href="./">Home</a><a href="guide.html">Guide</a><a href="api.html">API</a><a href="https://github.com/moonbitstack/moonsver">Source</a></nav>
@@ -268,7 +269,7 @@
         const c = document.createElement("span");
         c.className = "chip" + (sat.get(v) ? "" : " alt");
         c.textContent = v;
-        c.style.opacity = sat.get(v) ? "1" : ".62";
+        c.style.opacity = sat.get(v) ? "1" : ".6";
         sortedChips.appendChild(c);
       });
     }
