@@ -439,7 +439,7 @@ pre .w2 { width: 2ch; }
   padding: 10px 12px; outline: none; transition: border-color .15s ease, box-shadow .15s ease;
 }
 .input:focus-visible, .select:focus-visible, .textarea:focus-visible { border-color: var(--accent); box-shadow: var(--glow); }
-.textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
+.textarea { min-height: 196px; resize: vertical; line-height: 1.55; }
 .select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%); background-position: calc(100% - 18px) 17px, calc(100% - 13px) 17px; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 34px; }
 
 .result {
@@ -482,14 +482,14 @@ pre .w2 { width: 2ch; }
 .axis-caption .legend .on i { background: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent); }
 .axis-caption .legend .off i { background: color-mix(in oklab, var(--no) 60%, transparent); }
 
-.axis { position: relative; height: 132px; margin: 6px 10px 0; }
-.axis-line { position: absolute; left: 0; right: 0; top: 64px; height: 2px; background: linear-gradient(90deg, color-mix(in oklab, var(--line-strong) 60%, transparent), color-mix(in oklab, var(--line-strong) 60%, transparent)); border-radius: 2px; }
-.axis-band { position: absolute; top: 60px; height: 10px; border-radius: 6px; background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 70%, transparent), color-mix(in oklab, var(--accent-3) 75%, transparent)); opacity: .9; }
-.axis-tick { position: absolute; top: 50px; transform: translateX(-50%); text-align: center; width: 0; }
-.axis-tick .bar { width: 2px; height: 16px; margin: 0 auto; border-radius: 2px; background: color-mix(in oklab, var(--no) 55%, transparent); }
-.axis-tick .dot { width: 11px; height: 11px; border-radius: 50%; margin: 3px auto 0; background: color-mix(in oklab, var(--no) 55%, transparent); border: 2px solid var(--surface); }
-.axis-tick .lab { position: absolute; left: 50%; top: 40px; transform: translateX(-50%) rotate(-32deg); transform-origin: top center; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
-.axis-tick.on .bar { background: var(--accent); }
+.axis { position: relative; height: 124px; margin: 10px 10px 0; }
+.axis-line { position: absolute; left: 0; right: 0; top: 56px; height: 2px; background: linear-gradient(90deg, color-mix(in oklab, var(--line-strong) 60%, transparent), color-mix(in oklab, var(--line-strong) 60%, transparent)); border-radius: 2px; }
+.axis-band { position: absolute; top: 52px; height: 10px; border-radius: 6px; background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 70%, transparent), color-mix(in oklab, var(--accent-3) 75%, transparent)); opacity: .9; }
+.axis-tick { position: absolute; top: 56px; transform: translateX(-50%); text-align: center; width: 0; }
+.axis-tick .stem { width: 2px; height: 14px; margin: -14px auto 0; border-radius: 2px; background: color-mix(in oklab, var(--no) 55%, transparent); }
+.axis-tick .dot { width: 11px; height: 11px; border-radius: 50%; margin: -5px auto 0; background: color-mix(in oklab, var(--no) 55%, transparent); border: 2px solid var(--surface); }
+.axis-tick .lab { position: absolute; left: 50%; top: 12px; transform: translateX(-50%) rotate(-32deg); transform-origin: top center; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+.axis-tick.on .stem { background: var(--accent); }
 .axis-tick.on .dot { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent); }
 .axis-tick.on .lab { color: var(--ink); font-weight: 600; }
 .axis-empty { text-align: center; color: var(--ink-faint); font-size: 14px; padding: 30px 0; }
@@ -693,15 +693,15 @@ table.ref-table tr:last-child td { border-bottom: 0; }
   .vc-head { flex-wrap: wrap; }
   .cta .btn { flex: 1 1 auto; justify-content: center; }
   .axis-tick .lab { display: none; }
-  .axis { height: 92px; }
-  .axis-line, .axis-band { top: 42px; }
-  .axis-tick { top: 30px; }
-  .axis-tick .lab { top: 34px; }
+  .axis { height: 74px; }
+  .axis-line { top: 40px; }
+  .axis-band { top: 36px; }
+  .axis-tick { top: 40px; }
 }
 
 /* ---- additions: axis max flag, lens labels, small-screen header ---- */
 .axis-tick .maxflag {
-  position: absolute; left: 50%; top: -21px; transform: translateX(-50%);
+  position: absolute; left: 50%; top: -34px; transform: translateX(-50%);
   font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
   color: #fff; background: linear-gradient(120deg, var(--accent), var(--accent-2));
   padding: 1px 7px; border-radius: 20px; white-space: nowrap;

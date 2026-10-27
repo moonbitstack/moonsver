@@ -193,7 +193,7 @@
       const isMax = max != null && list[i] === max;
       html += `<div class="axis-tick ${on ? "on" : "off"}${isMax ? " max" : ""}" style="left:${pos(i)}%">` +
         (isMax ? '<span class="maxflag">max</span>' : '') +
-        '<div class="bar"></div><div class="dot"></div>' +
+        '<div class="stem"></div><div class="dot"></div>' +
         `<div class="lab">${esc(list[i])}</div></div>`;
     }
     axis.innerHTML = html;
@@ -220,7 +220,8 @@
 
   function render() {
     if (!engine) {
-      rangeReadout.textContent = "The compiled library did not load; serve the site over HTTP.";
+      rangeReadout.textContent = "The compiled library did not load. Serve this page over HTTP; the guide shows the same calls and their results.";
+      rowsBody.innerHTML = '<tr><td colspan="3" style="color:var(--ink-faint)">nothing to run</td></tr>';
       return;
     }
     const range = rangeIn.value.trim();
@@ -282,7 +283,7 @@
     }
   }
 
-  if (rangeIn && engine) {
+  if (rangeIn) {
     let t = null;
     const debounce = () => { clearTimeout(t); t = setTimeout(render, 150); };
     rangeIn.addEventListener("input", debounce);
