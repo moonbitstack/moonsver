@@ -39,7 +39,7 @@ jobs:
           python3 scripts/gen_api.py
           git diff --exit-code docs/api.html
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: docs
 
