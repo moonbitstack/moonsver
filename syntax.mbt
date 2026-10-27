@@ -48,8 +48,8 @@ pub(all) enum PrereleasePolicy {
 /// Range grammar settings.
 ///
 /// A version has one spelling in SemVer 2.0.0, but ranges are not in the spec, and
-/// npm, Cargo and RubyGems each wrote their own grammar. The differences are pulled
-/// out as settings here: one parser, several grammars, the same idea as moonregex.
+/// different ecosystems settled on different rules. Their differences are settings
+/// here, so one parser can read several grammars.
 ///
 /// Switches that govern version literals:
 /// - `allow_v_prefix`: accept `v1.2.3`
@@ -110,7 +110,7 @@ pub fn Syntax::strict() -> Syntax {
 }
 
 ///|
-/// npm (node-semver) grammar: a bare version is exact, with `^`, `~`, `||`, hyphen
+/// npm grammar: a bare version is exact, with `^`, `~`, `||`, hyphen
 /// ranges, `1.x` shorthand, a `v` prefix, and the empty string for "any".
 pub fn Syntax::npm() -> Syntax {
   {
@@ -154,7 +154,7 @@ pub fn Syntax::cargo() -> Syntax {
 }
 
 ///|
-/// RubyGems grammar: `~>` is the pessimistic operator (drop the last segment, then bump),
+/// Ruby grammar: `~>` is the pessimistic operator (drop the last segment, then bump),
 /// and `!=` is allowed; no `^`, `||`, hyphen ranges or shorthand.
 pub fn Syntax::ruby() -> Syntax {
   {

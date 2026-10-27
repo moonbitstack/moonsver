@@ -1,7 +1,7 @@
 ///|
 /// The kind of bump to apply.
 ///
-/// Semantics follow node-semver's `inc()`, including the detail that is easy to miss:
+/// Several corners are easy to miss:
 /// the major bump of `1.0.0-pre` is `1.0.0`.
 pub(all) enum Release {
   /// `1.2.3` → `2.0.0`；`1.0.0-pre` → `1.0.0`

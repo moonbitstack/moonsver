@@ -2,8 +2,7 @@
 /// A SemVer 2.0.0 version.
 ///
 /// The three numbers are arbitrary-precision integers, so `18446744073709551616.0.0`
-/// parses, prints and compares exactly, well past 64 bits (node-semver stops at the
-/// JS safe integer, Rust's semver crate at u64).
+/// parses, prints and compares exactly, well past 64 bits.
 ///
 /// The fields are private and only `Version::new` / `Version::parse` can build one,
 /// so a version never carries a leading zero or a malformed identifier list.

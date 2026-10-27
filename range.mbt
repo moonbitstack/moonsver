@@ -579,8 +579,8 @@ fn cmp(op : Op, version : Version) -> Comparator {
 ///|
 /// Expand one token (operator plus partial version) into comparators.
 ///
-/// The expansion follows node-semver's `replaceXRange` / `replaceCarets` /
-/// `replaceTildes`; only which spellings are allowed differs, and that is the grammar.
+/// Each operator expands to a lower and an upper bound; only which spellings are
+/// allowed differs, and that is the grammar.
 fn desugar(
   op : TokenOp,
   p : Partial,
