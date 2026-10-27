@@ -1,0 +1,6 @@
+import {
+  "moonbitstack/moonsver",
+  "moonbitlang/core/json",
+}
+
+pkgtype(kind: "executable")

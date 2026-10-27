@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground · moonsver</title>
+<meta name="description" content="Type a list of versions and a range expression, then see which ones satisfy it and how they sort. Runs the moonsver library compiled to JavaScript.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>try{var q=new URLSearchParams(location.search).get('theme');var t=q||localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href="./" aria-label="moonsver home">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1.3" fill="#fff" opacity=".85"/><rect x="10" y="8" width="4" height="13" rx="1.3" fill="#fff" opacity=".95"/><rect x="17" y="3" width="4" height="18" rx="1.3" fill="#fff"/></svg></span>
+      <span class="brand-text"><span class="brand-name">moonsver</span><span class="brand-tag">Semantic Versioning for MoonBit</span></span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a class="navlink" href="./">Home</a>
+      <a class="navlink" href="guide.html">Guide</a>
+      <a class="navlink" href="play.html" aria-current="page">Playground</a>
+      <a class="navlink" href="api.html">API</a>
+      <a class="gh" href="https://github.com/moonbitstack/moonsver" aria-label="Source on GitHub" title="Source on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+      <button class="theme-btn" type="button" aria-label="Toggle theme">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="menu-btn theme-btn" type="button" aria-expanded="false" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="page-head" style="padding-top:40px">
+    <p class="eyebrow">Playground</p>
+    <h1 style="font-size:clamp(30px,4.4vw,46px)">Sort a list, test a range</h1>
+    <p>Type versions, one per line, and a range expression. Every row is parsed by the library compiled to JavaScript, so the answers are the package's own.</p>
+  </div>
+
+  <section class="panel" style="margin:22px 0 20px">
+    <div class="panel-head">
+      <span class="ttl">input</span>
+      <div class="lens" style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="caret">^1.2.3</button>
+        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="tilde">~1.2.0</button>
+        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="xrange">1.2.*</button>
+        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="range">&gt;=1.0.0 &lt;2.0.0</button>
+        <button class="btn ghost" style="padding:6px 10px;font-size:12px" data-preset="ruby">~&gt; 1.2</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="demo-grid" style="margin-bottom:14px">
+        <div class="control">
+          <label for="rangeIn">Range expression</label>
+          <input class="input" id="rangeIn" type="text" value="^1.2.3" spellcheck="false" autocomplete="off">
+        </div>
+        <div class="control">
+          <label for="syntaxIn">Grammar</label>
+          <select class="select" id="syntaxIn">
+            <option value="npm" selected>npm</option>
+            <option value="cargo">Cargo</option>
+            <option value="ruby">Ruby</option>
+            <option value="strict">strict (spec only)</option>
+          </select>
+        </div>
+      </div>
+      <div class="control">
+        <label for="versIn">Versions, one per line</label>
+        <textarea class="textarea" id="versIn" spellcheck="false">0.9.9
+1.0.0
+1.2.0
+1.2.3
+1.4.1
+1.9.0
+2.0.0-rc.1
+2.0.0</textarea>
+      </div>
+      <p class="hint" id="rangeReadout">Reading…</p>
+    </div>
+  </section>
+
+  <section class="axis-wrap" style="margin-bottom:20px">
+    <div class="axis-caption">
+      <span class="cap">Precedence order · ascending</span>
+      <span class="legend"><span class="on"><i></i>satisfies</span><span class="off"><i></i>refuses</span></span>
+    </div>
+    <div class="axis" id="axis"><div class="axis-empty">No valid versions yet.</div></div>
+  </section>
+
+  <div class="demo-grid" style="align-items:start;margin-bottom:20px">
+    <section class="panel">
+      <div class="panel-head"><span class="ttl">Sorted, with verdict</span></div>
+      <div class="panel-body" style="padding:0">
+        <div class="table-scroll" style="border:0;border-radius:0">
+          <table class="results">
+            <thead><tr><th>#</th><th>Version</th><th>Status</th></tr></thead>
+            <tbody id="rowsBody"><tr><td colspan="3" style="color:var(--ink-faint)">—</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><span class="ttl">Result</span></div>
+      <div class="panel-body">
+        <div class="control" style="margin-bottom:10px">
+          <label>Newest that satisfies</label>
+          <div class="result" id="maxResult"><span class="rlabel">max satisfying</span><span class="rval" id="maxVal">—</span></div>
+        </div>
+        <div class="control">
+          <label>Canonical range</label>
+          <div class="sig" id="canon" style="margin:0">—</div>
+        </div>
+        <div class="control" style="margin-top:12px">
+          <label>Ascending order</label>
+          <div class="chips" id="sortedChips"></div>
+        </div>
+        <p class="hint" id="badVers"></p>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-bottom:40px">
+    <div class="panel-head">
+      <span class="ttl">One string, four grammars</span>
+      <span class="hint" style="margin:0">The same range, read by each preset</span>
+    </div>
+    <div class="panel-body">
+      <div class="lens" id="lens">
+        <div class="lens-row"><span class="syn">npm</span><span class="out" id="lens-npm">—</span><span class="mk">default: exact</span></div>
+        <div class="lens-row"><span class="syn">cargo</span><span class="out" id="lens-cargo">—</span><span class="mk">default: caret</span></div>
+        <div class="lens-row"><span class="syn">ruby</span><span class="out" id="lens-ruby">—</span><span class="mk">~&gt; and !=</span></div>
+        <div class="lens-row"><span class="syn">strict</span><span class="out" id="lens-strict">—</span><span class="mk">comparators only</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap foot-grid">
+    <div>
+      <a class="foot-brand brand" href="./"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1.3" fill="#fff" opacity=".85"/><rect x="10" y="8" width="4" height="13" rx="1.3" fill="#fff" opacity=".95"/><rect x="17" y="3" width="4" height="18" rx="1.3" fill="#fff"/></svg></span><b>moonsver</b></a>
+      <p class="foot-meta">Semantic Versioning 2.0.0 for MoonBit · Apache-2.0</p>
+    </div>
+    <nav class="foot-links" aria-label="Footer"><a href="./">Home</a><a href="guide.html">Guide</a><a href="api.html">API</a><a href="https://github.com/moonbitstack/moonsver">Source</a></nav>
+  </div>
+</footer>
+
+<script type="module">
+  const esc = (s) => String(s).replace(/[&<>]/g, (c) => (c === "&" ? "&amp;" : c === "<" ? "&lt;" : ">"));
+  let engine = null;
+  try { engine = await import("./engine/moonsver.js"); } catch (e) { engine = null; }
+
+  const rangeIn = document.getElementById("rangeIn");
+  const syntaxIn = document.getElementById("syntaxIn");
+  const versIn = document.getElementById("versIn");
+  const axis = document.getElementById("axis");
+  const rowsBody = document.getElementById("rowsBody");
+  const maxVal = document.getElementById("maxVal");
+  const canon = document.getElementById("canon");
+  const sortedChips = document.getElementById("sortedChips");
+  const rangeReadout = document.getElementById("rangeReadout");
+  const badVers = document.getElementById("badVers");
+
+  const PRESETS = {
+    caret:  { range: "^1.2.3", syntax: "npm" },
+    tilde:  { range: "~1.2.0", syntax: "npm" },
+    xrange: { range: "1.2.*", syntax: "cargo" },
+    range:  { range: ">=1.0.0 <2.0.0", syntax: "npm" },
+    ruby:   { range: "~> 1.2", syntax: "ruby" }
+  };
+
+  function renderAxis(list, sat, max) {
+    if (!list.length) {
+      axis.innerHTML = '<div class="axis-empty">No valid versions yet.</div>';
+      return;
+    }
+    const n = list.length;
+    const pos = (i) => ((i + 0.5) / n) * 100;
+    let html = '<div class="axis-line"></div>';
+    for (let i = 0; i < n - 1; i++) {
+      if (sat.get(list[i]) && sat.get(list[i + 1])) {
+        const left = pos(i), width = pos(i + 1) - pos(i);
+        html += `<div class="axis-band" style="left:${left}%;width:${width}%"></div>`;
+      }
+    }
+    for (let i = 0; i < n; i++) {
+      const on = !!sat.get(list[i]);
+      const isMax = max != null && list[i] === max;
+      html += `<div class="axis-tick ${on ? "on" : "off"}${isMax ? " max" : ""}" style="left:${pos(i)}%">` +
+        (isMax ? '<span class="maxflag">max</span>' : '') +
+        '<div class="bar"></div><div class="dot"></div>' +
+        `<div class="lab">${esc(list[i])}</div></div>`;
+    }
+    axis.innerHTML = html;
+  }
+
+  function renderRows(list, sat, rows) {
+    let html = "";
+    list.forEach((v, i) => {
+      const on = !!sat.get(v);
+      html += `<tr><td class="rank">${i + 1}</td><td class="mono">${esc(v)}</td>` +
+        `<td><span class="sat ${on ? "yes" : "no"}"><span class="pip"></span>${on ? "satisfies" : "refuses"}</span></td></tr>`;
+    });
+    const bad = rows.filter((r) => !r.ok);
+    if (bad.length) {
+      bad.forEach((r) => {
+        html += `<tr><td class="rank">—</td><td class="mono">${esc(r.version)}</td>` +
+          `<td><span class="sat no"><span class="pip"></span>refused</span></td></tr>`;
+      });
+    }
+    if (!html) html = '<tr><td colspan="3" style="color:var(--ink-faint)">No versions.</td></tr>';
+    rowsBody.innerHTML = html;
+    badVers.textContent = bad.length ? bad.length + " input(s) did not parse: " + bad.map((r) => r.version).join(", ") : "";
+  }
+
+  function render() {
+    if (!engine) {
+      rangeReadout.textContent = "The compiled library did not load; serve the site over HTTP.";
+      return;
+    }
+    const range = rangeIn.value.trim();
+    const syntax = syntaxIn.value;
+    const versions = versIn.value;
+
+    let d;
+    try { d = JSON.parse(engine.check_all(range, versions, syntax)); } catch (e) { d = null; }
+    if (!d) { rangeReadout.textContent = "unexpected engine response"; return; }
+
+    // canonical readout + policy
+    let pr = null;
+    try { pr = JSON.parse(engine.parse_range(range, syntax)); } catch (e) {}
+
+    if (pr && pr.ok) {
+      canon.textContent = pr.normalised || "*";
+      canon.classList.remove("bad");
+      rangeReadout.textContent =
+        "canonical: " + (pr.normalised || "*") +
+        " · parses under " + syntax +
+        " · policy " + pr.policy;
+    } else {
+      canon.textContent = (pr && pr.error) || d.rangeError || "invalid range";
+      rangeReadout.textContent = "The range does not parse under " + syntax + ".";
+    }
+
+    const sat = new Map();
+    d.rows.forEach((r) => { if (r.ok) sat.set(r.normalised, r.satisfies); });
+
+    renderAxis(d.sorted, sat, d.max);
+    renderRows(d.sorted, sat, d.rows);
+
+    maxVal.textContent = d.max == null ? "none" : d.max;
+    maxVal.style.color = d.max == null ? "var(--no)" : "var(--yes)";
+
+    sortedChips.innerHTML = "";
+    if (!d.sorted.length) {
+      sortedChips.innerHTML = '<span class="chip" style="opacity:.6">empty</span>';
+    } else {
+      d.sorted.forEach((v) => {
+        const c = document.createElement("span");
+        c.className = "chip" + (sat.get(v) ? "" : " alt");
+        c.textContent = v;
+        c.style.opacity = sat.get(v) ? "1" : ".62";
+        sortedChips.appendChild(c);
+      });
+    }
+
+    // grammar lens
+    let g;
+    try { g = JSON.parse(engine.grammars(range || "1.2.3")); } catch (e) { g = null; }
+    if (g) {
+      for (const r of g.readings) {
+        const el = document.getElementById("lens-" + r.syntax);
+        if (!el) continue;
+        if (r.ok) { el.textContent = r.normalised || "*"; el.classList.remove("err"); }
+        else { el.textContent = "not supported"; el.classList.add("err"); }
+      }
+    }
+  }
+
+  if (rangeIn && engine) {
+    let t = null;
+    const debounce = () => { clearTimeout(t); t = setTimeout(render, 150); };
+    rangeIn.addEventListener("input", debounce);
+    syntaxIn.addEventListener("change", render);
+    versIn.addEventListener("input", debounce);
+    document.querySelectorAll("[data-preset]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const p = PRESETS[b.dataset.preset];
+        if (!p) return;
+        rangeIn.value = p.range;
+        syntaxIn.value = p.syntax;
+        render();
+      });
+    });
+    render();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+import {
+  "moonbitstack/moonsver",
+}
+
+options(
+  link: {
+    "js": {
+      "exports": [
+        "parse_version",
+        "parse_range",
+        "check_all",
+        "bump",
+        "compare",
+        "grammars",
+      ],
+      "format": "esm",
+    },
+  },
+)

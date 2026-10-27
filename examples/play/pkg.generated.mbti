@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbitstack/moonsver/examples/play"
+
+// Values
+pub fn bump(String, String) -> String
+
+pub fn check_all(String, String, String) -> String
+
+pub fn compare(String, String) -> String
+
+pub fn grammars(String) -> String
+
+pub fn parse_range(String, String) -> String
+
+pub fn parse_version(String) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

@@ -3,3 +3,6 @@
 !.moonignore
 _*
 target/
+
+# the docs site's compiled engine is built in CI, never committed
+docs/engine/
