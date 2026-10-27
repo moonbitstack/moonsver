@@ -1,7 +1,7 @@
 <div align="center">
   <img src="docs/assets/logo.svg" width="76" height="76" alt="moonsver logo">
   <h1>moonsver</h1>
-  <p><strong>Semantic Versioning 2.0.0 for MoonBit.</strong><br>
+  <p><strong><a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning 2.0.0</a> for MoonBit.</strong><br>
   Parse and print versions, order them by precedence, and test ranges.</p>
 
   <p>
@@ -198,16 +198,16 @@ The policy is recorded in the `Range` when it is parsed, and `satisfies_with` ca
 
 ## Command line
 
-The `bin` package wraps the same functions.
+The `src/bin` package wraps the same functions.
 
 ```console
-$ moon run bin -- range "^0.2.3"
+$ moon run src/bin -- range "^0.2.3"
 >=0.2.3, <0.3.0
 
-$ moon run bin -- satisfies 1.9.0 "^1.2.3"
+$ moon run src/bin -- satisfies 1.9.0 "^1.2.3"
 true
 
-$ moon run bin -- sort 2.0.0 1.0.0-beta 1.0.0 0.9.9
+$ moon run src/bin -- sort 2.0.0 1.0.0-beta 1.0.0 0.9.9
 0.9.9
 1.0.0-beta
 1.0.0
@@ -228,14 +228,14 @@ let j = @json.to_json(@moonsver.Range::parse("^1.2.3"))
 ## Examples
 
 | Example | What it shows |
-| --- | --- |
-| [`examples/tour`](examples/tour) | The smallest useful walk through the package |
-| [`examples/ranges`](examples/ranges) | The same range under each preset, wildcards, hyphen ranges and policies |
-| [`examples/bumps`](examples/bumps) | Every `Release` form against a set of inputs |
-| [`examples/jsonio`](examples/jsonio) | A JSON round trip for a version and a range |
+|:--|:--|
+| [`src/examples/tour`](src/examples/tour) | The smallest useful walk through the package |
+| [`src/examples/ranges`](src/examples/ranges) | The same range under each preset, wildcards, hyphen ranges and policies |
+| [`src/examples/bumps`](src/examples/bumps) | Every `Release` form against a set of inputs |
+| [`src/examples/jsonio`](src/examples/jsonio) | A JSON round trip for a version and a range |
 
 ```console
-$ moon run examples/tour
+$ moon run src/examples/tour
 ```
 
 ## License

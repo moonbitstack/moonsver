@@ -1069,3 +1069,5 @@ table.ref-table td code { font-size: 12.5px; }
   .hero h1 { font-size: clamp(31px, 9.6vw, 40px); }
   .spec-strip { font-size: 8.5px; gap: 10px; }
 }
+
+html, button, input, textarea, select { font-variant-ligatures: no-contextual; }

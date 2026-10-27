@@ -14,6 +14,7 @@ import pathlib
 import re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+SRC = ROOT / "src"
 
 PACKAGES = [
     (
@@ -49,7 +50,7 @@ FIRST = {
 
 
 def sources(folder):
-    for path in sorted((ROOT / folder).glob("*.mbt")):
+    for path in sorted((SRC / folder).glob("*.mbt")):
         if not path.name.endswith("_test.mbt"):
             yield path.read_text(encoding="utf-8").splitlines()
 
@@ -105,7 +106,7 @@ def docs_of(folder):
 
 def items_of(folder):
     """Declarations from the interface file, in the order it lists them."""
-    lines = (ROOT / folder / "pkg.generated.mbti").read_text(encoding="utf-8").splitlines()
+    lines = (SRC / folder / "pkg.generated.mbti").read_text(encoding="utf-8").splitlines()
     items, block = [], None
     for line in lines:
         if block is not None:

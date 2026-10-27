@@ -30,7 +30,7 @@ jobs:
       - name: build the library for the playground
         run: |
           moon update
-          moon build --target js --release examples/play
+          moon build --target js --release src/examples/play
           mkdir -p docs/engine
           cp _build/js/release/build/examples/play/play.js docs/engine/moonsver.js
 
