@@ -1,63 +1,51 @@
-# moonsver
+<div align="center">
+  <img src="docs/assets/logo.svg" width="76" height="76" alt="moonsver logo">
+  <h1>moonsver</h1>
+  <p><strong>Semantic Versioning 2.0.0 for MoonBit.</strong><br>
+  Parse and print versions, order them by precedence, and test ranges.</p>
 
-SemVer 2.0.0 for MoonBit: parsing, printing, precedence and version ranges.
+  <p>
+    <a href="https://moonbitstack.github.io/moonsver/"><b>Home</b></a> &nbsp;·&nbsp;
+    <a href="https://moonbitstack.github.io/moonsver/guide.html"><b>Guide</b></a> &nbsp;·&nbsp;
+    <a href="https://moonbitstack.github.io/moonsver/api.html"><b>API</b></a> &nbsp;·&nbsp;
+    <a href="https://mooncakes.io/docs/#/moonbitstack/moonsver"><b>Mooncakes</b></a>
+  </p>
 
-Ranges are not part of the spec, and every ecosystem wrote its own grammar for them.
-moonsver pulls those differences out into a set of grammar settings (`Syntax`), so one
-parser handles npm, Cargo, RubyGems and a strict reading of the spec — the same idea as
-the grammar parameters in moonregex.
+  <sub>SemVer 2.0.0 · arbitrary precision · Apache-2.0</sub>
+</div>
 
-```
-                      ┌──────────────┐
-  "1.2.3-alpha+build" │  Version     │  parse / to_string
-  ">=1.2.3, <2.0.0"   │  Range       │  precedence_cmp / satisfies
-  "^1.2.3"  "~1.2"    │  Syntax      │  npm / cargo / ruby / strict
-                      └──────────────┘
-```
+---
 
-- **SemVer 2.0.0 only.** PEP 440 is not SemVer and is not implemented; `1.0.0.post1`
-  and `~=1.4` are refused rather than guessed at.
-- **Arbitrary precision.** The three numbers are `BigInt`s, so
-  `18446744073709551616.0.0` parses, prints and compares exactly. node-semver stops at
-  the JavaScript safe integer, Rust's `semver` crate at `u64`.
-- **Aligned with the mature implementations.** Precedence follows §11 of the spec to the
-  letter; range expansion matches node-semver's `replaceXRange` / `replaceCarets` /
-  `replaceTildes` and Cargo's caret rules.
-- **No third-party dependencies**, just `moonbitlang/core`.
+**moonsver** reads and writes semantic versions, compares them by the precedence rules of the spec, and evaluates version ranges. A version is a small, strict format, so the work is in the edges: leading zeroes, prerelease ordering, build metadata, and the many ways a range can be written. All of that is handled here.
 
-## Using it
+The three numbers are arbitrary-precision integers, so `18446744073709551616.0.0` parses, prints and compares exactly. A range is parsed into comparator sets that you can read back, and every range grammar — npm, Cargo, Ruby or the strict spec — is a setting on one parser.
 
-In your `moon.pkg` (module `moonbitstack/moonsver`, package alias `@moonsver`):
+- **Arbitrary precision.** Numbers are `BigInt`, not a fixed-width integer.
+- **One parser, four grammars.** The grammar is a `Syntax` value, not a separate parser.
+- **Ranges as structure.** `^1.2.3` becomes `>=1.2.3, <2.0.0`; ask it anything.
+- **Precedence per §11.** Build metadata is excluded, exactly as the spec says.
+- **Bumps.** Major, minor, patch, the four prerelease forms, and stable.
+- **JSON in and out.** Versions and ranges serialise as strings.
+- **No dependencies.** Only `moonbitlang/core`.
 
-```
+## Install
+
+Add the module to your package:
+
+```moonbit
+// moon.pkg
 import {
   "moonbitstack/moonsver",
 }
 ```
 
-While it is still local, list the checkout as a member of your `moon.work` workspace
-and import it as usual — for local members the version in the import is ignored:
-
-```
-// moon.work
-members = [
-  "vendor/moonsver",
-]
-
-// moon.mod
-import {
-  "moonbitstack/moonsver@0.1.0",
-}
-```
-
-(Not on mooncakes yet; once it is, `moon add moonbitstack/moonsver` will do the job.)
+It exports as `@moonsver`. With the package manager, `moon add moonbitstack/moonsver` writes the same import.
 
 ## Quick start
 
 ```moonbit
-///|
 fn demo() -> Unit raise @moonsver.Refused {
-  // Parsing and printing
+  // Parse and print
   let v = @moonsver.Version::parse("1.2.3-alpha.1+build.5")
   println(v.to_string())      // 1.2.3-alpha.1+build.5
   println(v.core_string())    // 1.2.3
@@ -79,241 +67,177 @@ fn demo() -> Unit raise @moonsver.Refused {
 }
 ```
 
-Input that does not parse raises `Refused`, which says what was wrong and where.
+Input that does not parse raises `Refused`, which names what was wrong and where.
 
-## API
+## Interface
 
 ### `Version`
 
 | Method | What it does |
 | --- | --- |
-| `Version::parse(s, syntax?)` | Parse, raising `Refused`; npm grammar by default |
+| `Version::parse(s, syntax?)` | Parse a string, raising `Refused`; the npm grammar is the default |
 | `Version::new(major, minor, patch)` | Build from three `Int`s |
 | `Version::from_bigint(major, minor, patch)` | Build from three `BigInt`s |
 | `major()` / `minor()` / `patch()` | The numbers, as `BigInt` |
-| `prerelease()` / `build()` | Identifier lists (`ArrayView`) |
-| `is_prerelease()` / `is_stable()` | Prerelease or not |
+| `prerelease()` / `build()` | Identifier lists, as `ArrayView` |
+| `is_prerelease()` / `is_stable()` | Whether a prerelease is present |
 | `same_core(other)` | Do the three numbers match? |
 | `core()` / `core_string()` | Drop prerelease and build metadata |
-| `precedence_cmp(other)` | §11 precedence, returning `-1`, `0` or `1` |
-| `compare(other)` | Total order: precedence, then build metadata (`Compare`, so `sort` works) |
-| `inc(release)` | Apply a bump, see below |
-| `to_string()` | Canonical text (`Show`) |
+| `precedence_cmp(other)` | §11 precedence: `-1`, `0` or `1` |
+| `compare(other)` | Total order: precedence, then build metadata |
+| `inc(release)` | Apply a bump |
+| `to_string()` | The canonical text form |
 
-Equality (`Eq`) is **full equality**: `1.0.0+a != 1.0.0+b`, though the two share a
-precedence. That is the choice Rust's `semver` makes as well; node-semver's `eq` ignores
-build metadata.
-
-### `Release`
-
-`Major`, `Minor`, `Patch`, `PreMajor`, `PreMinor`, `PrePatch`, `Prerelease`, `Stable`,
-with the same behaviour as node-semver's `inc()`, including the corners that are easy to
-miss:
-
-| Input | Bump | Result |
-| --- | --- | --- |
-| `1.0.0-pre` | `Major` | `1.0.0` (minor and patch are already zero, so only the prerelease goes) |
-| `1.2.0-pre` | `Major` | `2.0.0` |
-| `1.2.3-pre` | `Patch` | `1.2.3` |
-| `1.2.3` | `Prerelease` | `1.2.4-0` |
-| `1.2.3-alpha.1.2` | `Prerelease` | `1.2.3-alpha.1.3` (last numeric identifier wins) |
-| `1.2.3-alpha.beta` | `Prerelease` | `1.2.3-alpha.beta.0` |
-| `1.2.3-rc.1+build` | `Stable` | `1.2.3` |
-
-`Release::parse("major")` and `to_string()` are there for the CLI and config files.
+Equality is full equality: `1.0.0+a` and `1.0.0+b` are not equal, though they share a precedence.
 
 ### `Range`
 
 | Method | What it does |
 | --- | --- |
-| `Range::parse(s, syntax?)` | Parse, raising `Refused` |
+| `Range::parse(s, syntax?)` | Parse a range, raising `Refused` |
 | `Range::any()` | Any version (`*`) |
 | `satisfies(version)` / `satisfies_with(version, policy)` | Does the version fit? |
-| `max_satisfying(versions)` / `min_satisfying(versions)` | The extremes that fit |
-| `satisfying(versions)` | Everything that fits, sorted ascending by precedence |
-| `sets()` | The disjuncts (`ArrayView[ComparatorSet]`) |
+| `max_satisfying(versions)` / `min_satisfying(versions)` | The extreme versions that fit |
+| `satisfying(versions)` | Everything that fits, sorted ascending |
+| `sets()` | The disjuncts, as `ArrayView[ComparatorSet]` |
 | `policy()` | The prerelease policy the range was parsed with |
-| `is_any()` | Is this the same as any version? |
-| `to_string()` | Canonical text, which re-parses under the same grammar |
+| `is_any()` | Whether this is the same as any version |
+| `to_string()` | Canonical text that re-parses under the same grammar |
 
-A `Range` is the parsed, expanded structure rather than the original string: `^1.2.3` is
-the conjunction of `>=1.2.3` and `<2.0.0`. Canonical output joins comparators with `, `
-and disjuncts with ` || `.
+A `Range` is the parsed structure, not the original string. Canonical output joins comparators with `, ` and disjuncts with ` || `.
 
-### `satisfies(version, range, syntax?)`
+### `Release`
 
-A one-liner for two strings, raising `Refused` when either does not parse.
+`Major`, `Minor`, `Patch`, `PreMajor`, `PreMinor`, `PrePatch`, `Prerelease`, `Stable`. `Release::parse("major")` and `to_string()` serve config files and the command line.
 
-### Errors
+| Input | Bump | Result |
+| --- | --- | --- |
+| `1.0.0-pre` | `Major` | `1.0.0` |
+| `1.2.0-pre` | `Major` | `2.0.0` |
+| `1.2.3-pre` | `Patch` | `1.2.3` |
+| `1.2.3` | `Prerelease` | `1.2.4-0` |
+| `1.2.3-alpha.1.2` | `Prerelease` | `1.2.3-alpha.1.3` |
+| `1.2.3-alpha.beta` | `Prerelease` | `1.2.3-alpha.beta.0` |
+| `1.2.3-rc.1+build` | `Stable` | `1.2.3` |
 
-`Refused` names what was wrong: `Empty`, `Unexpected`, `Truncated`, `Number`,
-`LeadingZero`, `EmptyIdentifier`, `Identifier`, `Unsupported` or `Range`. Each carries
-`at`, the character index of the first offending character, and a message; `at()` and
-`message()` read them without matching.
+### One-liner and errors
 
-## Grammar settings (`Syntax`)
+`satisfies(version, range, syntax?)` parses two strings and answers; both are read with the same grammar.
 
-A version has one spelling in SemVer 2.0.0, but ranges are not in the spec, and npm,
-Cargo and RubyGems each wrote their own grammar. `Syntax` pulls the differences apart
-into fourteen settings:
+`Refused` names what was wrong: `Empty`, `Unexpected`, `Truncated`, `Number`, `LeadingZero`, `EmptyIdentifier`, `Identifier`, `Unsupported` or `Range`. Each carries `at`, the character index of the first offending character. `at()` and `message()` read them without matching.
 
-| Field | What it controls | npm | Cargo | Ruby | strict |
-| --- | --- | --- | --- | --- | --- |
-| `default_op` | Meaning of a bare version | `Exact` | `Caret` | `Exact` | `Exact` |
-| `tilde_bump` | How `~` finds its upper bound | `Patch` | `Patch` | `LastSpecified` | `Patch` |
-| `allow_caret` | Accept `^` | yes | yes | no | no |
-| `allow_tilde` | Accept `~` (`~>` only under `LastSpecified`) | yes | yes | yes | no |
-| `allow_ne` | Accept `!=` | no | no | yes | no |
-| `allow_or` | Accept `\|\|` | yes | no | no | no |
-| `allow_hyphen_range` | Accept `1.2.3 - 2.0.0` | yes | no | no | no |
-| `allow_xrange` | Accept `1.x`, `1.2.*`, bare `1.2` | yes | yes | no | no |
-| `allow_empty` | Empty string means any version | yes | no | no | no |
-| `allow_v_prefix` | Accept `v1.2.3` | yes | no | no | no |
-| `allow_equals_prefix` | Accept `=1.2.3` as a version literal | yes | yes | yes | no |
-| `allow_build_metadata` | Accept `+build` | yes | yes | yes | yes |
-| `trim` | Whitespace around a version literal | yes | yes | yes | no |
-| `prerelease_policy` | How prereleases are matched | `SameTuple` | `SameTuple` | `SameTuple` | `SameTuple` |
+## Grammars
 
-`Syntax::from_name("cargo")` and `name()` serve config files and the CLI; `Default` is
-npm's grammar. You can also build a `Syntax` literal of your own — npm's sugar with
-Cargo's caret default, say.
+A version has one spelling in SemVer 2.0.0. Ranges are not in the spec, so different ecosystems settled on different rules. `Syntax` collects those differences as settings, and four presets are built from them:
 
-### The same string, three readings
+| Preset | A bare version means | `^` | `~` | `\|\|` | Hyphen | `1.x` | `!=` |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Syntax::npm()` | exact | yes | yes | yes | yes | yes | no |
+| `Syntax::cargo()` | caret | yes | yes | no | no | yes | no |
+| `Syntax::ruby()` | exact | no | `~>` | no | no | no | yes |
+| `Syntax::strict()` | exact | no | no | no | no | no | no |
+
+`Syntax::from_name("cargo")` and `name()` serve config files and the CLI. `Default` is the npm preset. You can also build a `Syntax` literal of your own.
+
+<details>
+<summary><b>All fourteen settings</b></summary>
+
+| Field | What it controls |
+| --- | --- |
+| `default_op` | What a bare version means: `Exact`, `Caret` or `Tilde` |
+| `tilde_bump` | How `~` finds its upper bound: `Patch` or `LastSpecified` |
+| `allow_caret` | Accept `^` |
+| `allow_tilde` | Accept `~` (`~>` only under `LastSpecified`) |
+| `allow_ne` | Accept `!=` |
+| `allow_or` | Accept `\|\|` |
+| `allow_hyphen_range` | Accept `1.2.3 - 2.0.0` |
+| `allow_xrange` | Accept `1.x`, `1.2.*` and bare `1.2` |
+| `allow_empty` | Treat an empty string as any version |
+| `allow_v_prefix` | Accept `v1.2.3` |
+| `allow_equals_prefix` | Accept `=1.2.3` as a version literal |
+| `allow_build_metadata` | Accept a `+build` segment |
+| `trim` | Allow whitespace around a version literal |
+| `prerelease_policy` | How prereleases are matched |
+
+</details>
+
+### The same string, read differently
 
 | Written | npm | Cargo | Ruby |
 | --- | --- | --- | --- |
 | `1.2.3` | `=1.2.3` | `>=1.2.3, <2.0.0` | `=1.2.3` |
-| `~1.2` | `>=1.2.0, <1.3.0` | `>=1.2.0, <1.3.0` | — (`~> 1.2` gives `>=1.2.0, <2.0.0`) |
+| `~1.2` | `>=1.2.0, <1.3.0` | `>=1.2.0, <1.3.0` | `~> 1.2` gives `>=1.2.0, <2.0.0` |
 | `1.2.*` | `>=1.2.0, <1.3.0` | `>=1.2.0, <1.3.0` | not supported |
-| `^1.2.3 \|\| ^2` | fine | rejected | rejected |
 
-Note that `1.2.*` is **not** a caret under Cargo: an explicit wildcard wins over
-`default_op`, which is what Cargo's own documentation says (`1.2.*` := `>=1.2.0,
-<1.3.0`).
+An explicit wildcard wins over `default_op`: under the Cargo preset, `1.2.*` is `>=1.2.0, <1.3.0`, not a caret range.
 
-## How it behaves
+## Precedence
 
-### Precedence (§11)
+1. Compare `major`, `minor` and `patch` in turn, at arbitrary precision.
+2. A version with a prerelease ranks below the same numbers without one.
+3. Prerelease identifiers compare one by one: numeric by value, numeric below alphanumeric, alphanumeric in ASCII order.
+4. A prefix ranks below the longer list.
+5. Build metadata takes no part.
 
-1. Compare `major`, `minor`, `patch` in turn (arbitrary precision);
-2. a version with a prerelease ranks below the same numbers without one;
-3. prerelease identifiers compare one by one: numeric by value, numeric below
-   alphanumeric, alphanumeric in ASCII order;
-4. a prefix ranks below the longer list;
-5. **build metadata takes no part**.
+```text
+1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2
+            < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0
+```
 
-`1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 <
-1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0` is a test case, so it stays that way.
+## Prereleases in ranges
 
-### Prereleases and ranges
-
-The spec says nothing about how a range should treat prereleases, and every ecosystem
-settled on "only through a comparator with the same `major.minor.patch` that carries a
-prerelease itself". moonsver makes that a three-way setting:
+The spec says nothing about how a range should treat prereleases. `Syntax` makes it a three-way setting:
 
 | Policy | Meaning | Example |
 | --- | --- | --- |
-| `SameTuple` | The npm and Cargo convention | `>=1.2.3-alpha` takes `1.2.3-beta`, refuses `1.2.4-beta`; `*` takes no prerelease at all |
-| `Always` | Compare them like any other version (npm's `includePrerelease`) | `>=1.0.0` takes `1.5.0-beta` |
-| `Never` | Prereleases never match, for when only stable releases will do | `>=1.0.0` refuses `1.5.0-beta` |
+| `SameTuple` | Only through a comparator with the same `major.minor.patch` that carries a prerelease | `>=1.2.3-alpha` takes `1.2.3-beta`, refuses `1.2.4-beta` |
+| `Always` | Compare a prerelease like any other version | `>=1.0.0` takes `1.5.0-beta` |
+| `Never` | Prereleases never match | `>=1.0.0` refuses `1.5.0-beta` |
 
-The policy is recorded in the `Range` when it is parsed, and `satisfies_with` can override
-it for a single call.
+The policy is recorded in the `Range` when it is parsed, and `satisfies_with` can override it for one call.
 
-### Canonical text
+## Command line
 
-`Range::to_string` prints the expanded comparators, and the output re-parses under the
-same grammar (there are tests for the round trip). The one exception is `*`, which is
-always accepted as "any version" — it is what an empty range prints, so refusing it would
-break the round trip.
+The `bin` package wraps the same functions.
 
-## How it compares
+```console
+$ moon run bin -- range "^0.2.3"
+>=0.2.3, <0.3.0
 
-| Behaviour | node-semver | Rust `semver` | Cargo | moonsver |
-| --- | --- | --- | --- | --- |
-| Numeric range | JS safe integer | `u64` | `u64` | arbitrary precision |
-| Bare version means | exact | exact | caret | whatever `Syntax::default_op` says |
-| Build metadata in precedence | no | no | no | no |
-| Build metadata in `Eq` | no (`eq` uses `compare`) | yes | — | yes |
-| `\|\|` | yes | no | no | a setting |
-| Hyphen ranges | yes | no | no | a setting |
-| `1.x` shorthand | yes | no | `*` forms only | a setting |
-| Prerelease matching | same-tuple anchor | same-tuple anchor | same-tuple anchor | three policies |
+$ moon run bin -- satisfies 1.9.0 "^1.2.3"
+true
 
-## CLI
-
-```bash
-moon run bin -- parse 1.2.3 v2.0.0-rc.1+build
-moon run bin -- compare 1.0.0-rc.1 1.0.0
-moon run bin -- sort 2.0.0 1.0.0-beta 1.0.0 0.9.9
-moon run bin -- bump prerelease 1.2.3-alpha.1     # 1.2.3-alpha.2
-moon run bin -- range "^0.2.3"                    # >=0.2.3, <0.3.0
-moon run bin -- range --syntax cargo 1.2.3        # >=1.2.3, <2.0.0
-moon run bin -- range --syntax ruby "~> 1.2"      # >=1.2.0, <2.0.0
-moon run bin -- satisfies 1.9.0 "^1.2.3"          # true
-moon run bin -- max "^1.2.0" 1.0.0 1.2.3 1.5.0    # 1.5.0
-moon run bin -- parse --json 1.2.3-alpha.1
+$ moon run bin -- sort 2.0.0 1.0.0-beta 1.0.0 0.9.9
+0.9.9
+1.0.0-beta
+1.0.0
+2.0.0
 ```
 
-`parse --json` prints (the numbers are strings, so nothing is lost):
+A command exits `0` when it ran, even if the answer is `false` or nothing fits; read stdout for the answer. Bad arguments and parse failures exit non-zero with the detail on stderr.
 
-```json
-{
-  "input": "1.2.3-alpha.1",
-  "normalised": "1.2.3-alpha.1",
-  "major": "1",
-  "minor": "2",
-  "patch": "3",
-  "prerelease": ["alpha", "1"],
-  "build": [],
-  "is_prerelease": true
-}
-```
+## JSON
 
-Exit codes: `0` means the command ran — `satisfies` returning `false`, or `max`/`min`
-finding nothing, is still `0`, so read stdout for the answer. Bad arguments and parse
-failures exit non-zero with the detail on stderr.
-
-## Consuming it as a library
-
-`Version` and `Range` both implement `ToJson` / `FromJson`, serialised as strings, so they
-can go straight into config files or API responses:
+`Version` and `Range` implement `ToJson` / `FromJson`, serialised as strings, so they drop into config files and API responses:
 
 ```moonbit
 let j = @json.to_json(@moonsver.Range::parse("^1.2.3"))
 // Json::string(">=1.2.3, <2.0.0")
 ```
 
-A tool like moonctl can hand `Range::max_satisfying` a list of versions and get the newest
-one that fits, without reimplementing the comparison rules.
+## Examples
 
-## Examples and tests
+| Example | What it shows |
+| --- | --- |
+| [`examples/tour`](examples/tour) | The smallest useful walk through the package |
+| [`examples/ranges`](examples/ranges) | The same range under each preset, wildcards, hyphen ranges and policies |
+| [`examples/bumps`](examples/bumps) | Every `Release` form against a set of inputs |
+| [`examples/jsonio`](examples/jsonio) | A JSON round trip for a version and a range |
 
-```bash
-moon run examples   # the smallest useful example
-moon test           # 47 cases, green on wasm-gc, js, native and wasm
-moon check          # no warnings
+```console
+$ moon run examples/tour
 ```
 
-The cases cover the valid and invalid examples in the spec, the §11 precedence chain,
-build metadata, leading zeroes, arbitrary precision, npm's caret / tilde / shorthand /
-hyphen / disjunction forms, Cargo's caret default and wildcards, Ruby's pessimistic
-operator, all three prerelease policies, the extreme-value helpers, the JSON round trip
-and error kinds with their positions.
+## License
 
-## Deliberately not done
-
-- **PEP 440.** Not SemVer; `1.0.0.post1`, `~=1.4` and `==1.*` are refused.
-- **Loose mode.** node-semver's `loose` lets `01.2.3` and `1.2.3beta` through. moonsver
-  offers different grammars, not a licence to accept broken input.
-- **Range algebra.** `subset`, `intersects`, `minVersion` and `coerce` are not here. They
-  are not parsing problems but interval arithmetic over comparator sets, and deserve a
-  module of their own.
-- **Some Ruby spellings.** `~>`, `!=` and the comparators all work, but Ruby's bare `1.2`
-  means exactly `1.2.0` (Ruby pads the missing segments with zeroes), which is not npm's
-  x-range. Under the ruby preset that form is refused rather than guessed at — it is a
-  grey area, and guessing would be worse.
-- **Upper bounds under `Always`.** npm appends `-0` to upper bounds (`<2.0.0-0`) to shut
-  out the next version's prereleases. `SameTuple` gets the same result and keeps the
-  bounds clean; with `Always` those prereleases do fall inside, which is what `Always`
-  means.
+Apache-2.0. See [LICENSE](LICENSE).
