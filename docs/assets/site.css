@@ -164,10 +164,12 @@ img, svg { max-width: 100%; }
 .brand-name { font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: -.02em; }
 .brand-tag { font-size: 11.5px; color: var(--ink-soft); letter-spacing: .01em; margin-top: 2px; }
 
-.topnav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.topnav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nav-links { display: flex; align-items: center; gap: 4px; margin-right: 4px; }
 .topnav a {
   color: var(--ink-soft); font-size: 14px; font-weight: 500;
-  padding: 8px 12px; border-radius: 9px; transition: background .15s ease, color .15s ease;
+  line-height: 22px; padding: 8px 12px; border-radius: 9px;
+  transition: background .15s ease, color .15s ease;
 }
 .topnav a:hover { color: var(--ink); background: color-mix(in oklab, var(--accent) 9%, transparent); text-decoration: none; }
 .topnav a[aria-current="page"] { color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, transparent); }
@@ -177,16 +179,20 @@ img, svg { max-width: 100%; }
   background: var(--surface);
 }
 .topnav .gh:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
-.topnav .gh svg { width: 18px; height: 18px; }
+.topnav .gh svg { width: 17px; height: 17px; }
 .theme-btn {
   display: inline-grid; place-items: center; width: 38px; height: 38px; padding: 0;
   border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
   background: var(--surface); color: var(--ink-soft);
 }
 .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
-.theme-btn svg { width: 17px; height: 17px; }
-.theme-btn .i-sun { display: none; }
-.theme-btn .i-moon { display: block; }
+/* Stroked glyphs read smaller than a solid mark in the same box, so they get a
+   wider box and a lighter stroke: the three controls then look like one set. */
+.theme-btn svg { width: 22px; height: 22px; stroke-width: 1.6; }
+/* The sun's rays reach the edge of its box while the crescent sits inside its
+   own, so each gets the width that leaves the same amount of ink. */
+.theme-btn .i-sun { width: 20px; height: 20px; display: none; }
+.theme-btn .i-moon { width: 22px; height: 22px; display: block; }
 :root[data-theme="dark"] .theme-btn .i-sun { display: block; }
 :root[data-theme="dark"] .theme-btn .i-moon { display: none; }
 .menu-btn { display: none; }
@@ -676,16 +682,16 @@ table.ref-table tr:last-child td { border-bottom: 0; }
   .lens-row { grid-template-columns: 64px 1fr; }
   .lens-row .mk { display: none; }
   .foot-grid { flex-direction: column; align-items: flex-start; }
-  .topnav .navlink { display: none; }
+  .nav-links { display: none; }
   .menu-btn { display: inline-grid; }
-  .site-header:has(.menu-btn[aria-expanded="true"]) .topnav {
-    position: absolute; top: 100%; left: 0; right: 0;
-    flex-direction: column; align-items: stretch; gap: 2px;
+  /* Only the links fold into the sheet; the icons stay in the bar. */
+  .site-header:has(.menu-btn[aria-expanded="true"]) .nav-links {
+    display: flex; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 2px; margin: 0;
     padding: 12px 18px 16px; background: var(--surface);
     border-bottom: 1px solid var(--line); box-shadow: var(--shadow);
   }
-  .site-header:has(.menu-btn[aria-expanded="true"]) .topnav .navlink { display: block; }
-  .site-header:has(.menu-btn[aria-expanded="true"]) .topnav .gh { justify-self: start; }
+  .site-header:has(.menu-btn[aria-expanded="true"]) .nav-links .navlink { display: block; }
   .site-header .bar { position: relative; }
 }
 @media (width <= 480px) {
