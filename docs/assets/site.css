@@ -977,8 +977,14 @@ table.ref-table td code { font-size: 12.5px; }
   /* one scrolling row instead of five wrapped ones: the index stays an index */
   .toc {
     display: flex; flex-wrap: nowrap; gap: 6px; border-left: 0;
-    overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;
+    overflow-x: auto; padding-bottom: 6px;
     max-width: 100%;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    .toc {
+      scrollbar-width: thin;
+    }
   }
   .toc li { flex: none; }
   .toc a {
