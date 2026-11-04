@@ -11,6 +11,7 @@ import {
 pub fn satisfies(String, String, syntax? : Syntax) -> Bool raise Refused
 
 // Errors
+#derive(Eq)
 pub(all) suberror Refused {
   Empty(at~ : Int32, String)
   Unexpected(at~ : Int32, String)
@@ -21,7 +22,7 @@ pub(all) suberror Refused {
   Identifier(at~ : Int32, String)
   Unsupported(at~ : Int32, String)
   Range(at~ : Int32, String)
-} derive(Eq)
+}
 pub fn Refused::at(Self) -> Int32
 pub fn Refused::equal(Self, Self) -> Bool
 pub fn Refused::message(Self) -> String
@@ -126,7 +127,7 @@ pub struct Range {
 }
 pub fn Range::any() -> Self
 pub fn Range::equal(Self, Self) -> Bool
-pub fn Range::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Range::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Range::is_any(Self) -> Bool
 pub fn Range::max_satisfying(Self, Array[Version]) -> Version?
 pub fn Range::min_satisfying(Self, Array[Version]) -> Version?
@@ -138,14 +139,14 @@ pub fn Range::satisfies(Self, Version) -> Bool
 pub fn Range::satisfies_with(Self, Version, PrereleasePolicy) -> Bool
 pub fn Range::satisfying(Self, Array[Version]) -> Array[Version]
 pub fn Range::sets(Self) -> ArrayView[ComparatorSet]
-pub fn Range::to_json(Self) -> Json
+pub fn Range::to_json(Self) -> @json.Json
 pub fn Range::to_repr(Self) -> @debug.Repr
 pub fn Range::to_string(Self) -> String
 pub impl Eq for Range
 pub impl Show for Range
-pub impl ToJson for Range
 pub impl @debug.Debug for Range
 pub impl @json.FromJson for Range
+pub impl @json.ToJson for Range
 
 pub(all) enum Release {
   Major
@@ -216,7 +217,7 @@ pub fn Version::core(Self) -> Self
 pub fn Version::core_string(Self) -> String
 pub fn Version::equal(Self, Self) -> Bool
 pub fn Version::from_bigint(@bigint.BigInt, @bigint.BigInt, @bigint.BigInt) -> Self
-pub fn Version::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Version::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Version::hash(Self) -> Int32
 pub fn Version::hash_combine(Self, Hasher) -> Unit
 pub fn Version::inc(Self, Release) -> Self
@@ -236,16 +237,16 @@ pub fn Version::patch(Self) -> @bigint.BigInt
 pub fn Version::precedence_cmp(Self, Self) -> Int32
 pub fn Version::prerelease(Self) -> ArrayView[Identifier]
 pub fn Version::same_core(Self, Self) -> Bool
-pub fn Version::to_json(Self) -> Json
+pub fn Version::to_json(Self) -> @json.Json
 pub fn Version::to_repr(Self) -> @debug.Repr
 pub fn Version::to_string(Self) -> String
 pub impl Compare for Version
 pub impl Eq for Version
 pub impl Hash for Version
 pub impl Show for Version
-pub impl ToJson for Version
 pub impl @debug.Debug for Version
 pub impl @json.FromJson for Version
+pub impl @json.ToJson for Version
 
 // Type aliases
 

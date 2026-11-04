@@ -3,6 +3,7 @@
 ///
 /// `at` is the zero-based character index of the first offending character, or
 /// the input's length when it ended early; the message says what was expected.
+#derive(Eq)
 pub(all) suberror Refused {
   // Empty input where the grammar wants a version or a range.
   Empty(at~ : Int32, String)
@@ -23,7 +24,7 @@ pub(all) suberror Refused {
   Unsupported(at~ : Int32, String)
   // A range that does not hang together, such as a concrete part after a wildcard.
   Range(at~ : Int32, String)
-} derive(Eq)
+}
 
 ///|
 pub extend Refused with Eq::{equal, not_equal}
