@@ -69,6 +69,8 @@ def docs_of(folder):
             if s.startswith("///"):
                 pending.append(s[3:].strip())
                 continue
+            if s.startswith("#"):
+                continue
             if owner is not None:
                 if s.startswith("}"):
                     owner = None
