@@ -108,7 +108,7 @@ A `Range` is the parsed structure, not the original string. Canonical output joi
 
 ### `Release`
 
-`Major`, `Minor`, `Patch`, `PreMajor`, `PreMinor`, `PrePatch`, `Prerelease`, `Stable`. `Release::parse("major")` and `to_string()` serve config files and the command line.
+`Major`, `Minor`, `Patch`, `PreMajor`, `PreMinor`, `PrePatch`, `Prerelease`, `Stable`. `Release::parse("major")` and `to_string()` serve config files and the command line; an unknown name raises `Refused::Unexpected`.
 
 | Input | Bump | Result |
 | --- | --- | --- |

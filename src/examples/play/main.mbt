@@ -33,17 +33,6 @@ fn error_json(input : String, e : @moonsver.Refused) -> String {
 }
 
 ///|
-fn message_json(input : String, message : String) -> String {
-  let json : Json = {
-    "ok": Json(false),
-    "input": Json(input),
-    "error": Json(message),
-    "at": Json(0),
-  }
-  json.stringify()
-}
-
-///|
 fn ids_array(v : @moonsver.Version) -> Array[String] {
   let out : Array[String] = []
   for id in v.prerelease() {
@@ -213,18 +202,14 @@ pub fn check_all(
 pub fn bump(version_text : String, release : String) -> String {
   try {
     let v = @moonsver.Version::parse(version_text)
-    match @moonsver.Release::parse(release) {
-      Some(rel) => {
-        let json : Json = {
-          "ok": Json(true),
-          "input": Json(version_text),
-          "release": Json(release),
-          "result": Json(v.inc(rel).to_string()),
-        }
-        json.stringify()
-      }
-      None => message_json(version_text, "no such release: " + release)
+    let rel = @moonsver.Release::parse(release)
+    let json : Json = {
+      "ok": Json(true),
+      "input": Json(version_text),
+      "release": Json(release),
+      "result": Json(v.inc(rel).to_string()),
     }
+    json.stringify()
   } catch {
     e => error_json(version_text, e)
   }

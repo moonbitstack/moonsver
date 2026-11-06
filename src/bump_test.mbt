@@ -61,12 +61,15 @@ test "bump: build metadata is dropped" {
 
 ///|
 test "bump: parsing bump names" {
-  assert_true(@moonsver.Release::parse("major") is Some(@moonsver.Major))
-  assert_true(@moonsver.Release::parse("pre") is Some(@moonsver.Prerelease))
-  assert_true(
-    @moonsver.Release::parse("prerelease") is Some(@moonsver.Prerelease),
-  )
-  assert_true(@moonsver.Release::parse("release") is Some(@moonsver.Stable))
-  assert_true(@moonsver.Release::parse("nope") is None)
+  assert_true(@moonsver.Release::parse("major") is @moonsver.Major)
+  assert_true(@moonsver.Release::parse("pre") is @moonsver.Prerelease)
+  assert_true(@moonsver.Release::parse("prerelease") is @moonsver.Prerelease)
+  assert_true(@moonsver.Release::parse("release") is @moonsver.Stable)
+  let refused : Result[@moonsver.Release, @moonsver.Refused] = Ok(
+    @moonsver.Release::parse("nope"),
+  ) catch {
+    e => Err(e)
+  }
+  assert_true(refused is Err(@moonsver.Unexpected(at=0, _)))
   assert_eq(@moonsver.Major.to_string(), "major")
 }

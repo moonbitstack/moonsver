@@ -103,18 +103,18 @@ pub fn Version::inc(self : Version, release : Release) -> Version {
 }
 
 ///|
-/// Parse a bump name, for the CLI.
-pub fn Release::parse(name : String) -> Release? {
+/// Parse a bump name, as config files and the command line write it.
+pub fn Release::parse(name : String) -> Release raise Refused {
   match name {
-    "major" => Some(Major)
-    "minor" => Some(Minor)
-    "patch" => Some(Patch)
-    "premajor" => Some(PreMajor)
-    "preminor" => Some(PreMinor)
-    "prepatch" => Some(PrePatch)
-    "prerelease" | "pre" => Some(Prerelease)
-    "stable" | "release" => Some(Stable)
-    _ => None
+    "major" => Major
+    "minor" => Minor
+    "patch" => Patch
+    "premajor" => PreMajor
+    "preminor" => PreMinor
+    "prepatch" => PrePatch
+    "prerelease" | "pre" => Prerelease
+    "stable" | "release" => Stable
+    _ => fail(UnexpectedChar, "unknown bump kind: \{name}", 0)
   }
 }
 

@@ -170,9 +170,8 @@ fn cmd_bump(args : ArrayView[String], opts : Options) -> Unit {
   if args.length() != 2 {
     die("bump needs a bump kind and a version")
   }
-  let release = match @moonsver.Release::parse(args[0]) {
-    Some(r) => r
-    None => die("unknown bump kind: \{args[0]}")
+  let release = @moonsver.Release::parse(args[0]) catch {
+    e => die(e.message())
   }
   let v = parse_one(args[1], opts.syntax)
   println(v.inc(release).to_string())

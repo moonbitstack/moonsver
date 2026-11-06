@@ -159,7 +159,7 @@ pub(all) enum Release {
   Stable
 }
 pub fn Release::output(Self, &Logger) -> Unit
-pub fn Release::parse(String) -> Self?
+pub fn Release::parse(String) -> Self raise Refused
 pub fn Release::to_repr(Self) -> @debug.Repr
 pub fn Release::to_string(Self) -> String
 pub impl Show for Release
