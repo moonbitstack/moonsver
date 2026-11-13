@@ -263,7 +263,7 @@ def render_package(pkg, folder, route, intro):
         for m in sorted(methods.get(name, []), key=lambda x: member_order(x["name"])):
             short = m["name"].split("::")[-1]
             note = docs.get(m["name"], "") or DEFAULT_DOCS.get(short, "")
-            out.append('<div class="member">')
+            out.append(f'<div class="member" id="{anchor(pkg, m["name"])}">')
             out.append(
                 f'<div class="mhead"><span class="mname">{short}</span>'
                 f'<span class="mk">method</span>'
@@ -281,6 +281,27 @@ def render_package(pkg, folder, route, intro):
     return nav, body
 
 
+def check_coverage(pkg, folder, body):
+    """Every public item of the interface file has to reach the page.
+
+    Trait wiring (`equal`, `hash` and the like) is summarised as `Implements ...` on the
+    owning type, so those method names are allowed to be absent; everything else, generic
+    functions included, must have an anchor of its own.
+    """
+    missing = []
+    for item in items_of(folder):
+        if item["kind"] == "impl":
+            continue
+        name = item["name"]
+        if BOILERPLATE.search("::" + name.split("::")[-1] + "("):
+            continue
+        if f'id="{anchor(pkg, name)}"' not in body:
+            missing.append(name)
+    if missing:
+        raise SystemExit("the reference is missing: " + ", ".join(missing))
+    return len([i for i in items_of(folder) if i["kind"] != "impl"])
+
+
 def render():
     nav, body = [], []
     for pkg, folder, route, intro in PACKAGES:
@@ -290,8 +311,12 @@ def render():
     page = (ROOT / "docs" / "api.template.html").read_text(encoding="utf-8")
     page = page.replace("<!-- nav -->", "\n".join(nav))
     page = page.replace("<!-- body -->", "\n".join(body))
+    covered = 0
+    for pkg, folder, route, intro in PACKAGES:
+        covered = check_coverage(pkg, folder, page)
     (ROOT / "docs" / "api.html").write_text(page, encoding="utf-8", newline="\n")
+    return covered
 
 
-render()
-print("wrote docs/api.html")
+covered = render()
+print(f"wrote docs/api.html: {covered} public items, every one on the page")
