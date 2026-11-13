@@ -59,8 +59,9 @@ pub(all) enum PrereleasePolicy {
 ///
 /// Switches that govern range syntax:
 /// - `default_op`: what a bare version means (npm `Exact`, Cargo `Caret`)
-/// - `tilde_bump`: how `~` finds its upper bound (npm/Cargo `Patch`, Ruby `LastSpecified`)
-/// - `allow_caret` / `allow_tilde`: accept `^` / `~` (`~>` only under `LastSpecified`)
+/// - `allow_caret`: accept `^`
+/// - `allow_tilde` / `allow_tilde_arrow`: accept `~` / `~>`
+/// - `tilde_bump`: which segment `~` and `~>` bump
 /// - `allow_ne`: accept `!=`
 /// - `allow_or`: accept `||`
 /// - `allow_hyphen_range`: accept `1.2.3 - 2.0.0`
@@ -76,6 +77,7 @@ pub(all) struct Syntax {
   tilde_bump : TildeBump
   allow_caret : Bool
   allow_tilde : Bool
+  allow_tilde_arrow : Bool
   allow_ne : Bool
   allow_or : Bool
   allow_hyphen_range : Bool
@@ -100,6 +102,7 @@ pub fn Syntax::strict() -> Syntax {
     tilde_bump: Patch,
     allow_caret: false,
     allow_tilde: false,
+    allow_tilde_arrow: false,
     allow_ne: false,
     allow_or: false,
     allow_hyphen_range: false,
@@ -110,7 +113,7 @@ pub fn Syntax::strict() -> Syntax {
 }
 
 ///|
-/// npm grammar: a bare version is exact, with `^`, `~`, `||`, hyphen
+/// npm grammar: a bare version is exact, with `^`, `~` and `~>`, `||`, hyphen
 /// ranges, `1.x` shorthand, a `v` prefix, and the empty string for "any".
 pub fn Syntax::npm() -> Syntax {
   {
@@ -122,6 +125,7 @@ pub fn Syntax::npm() -> Syntax {
     tilde_bump: Patch,
     allow_caret: true,
     allow_tilde: true,
+    allow_tilde_arrow: true,
     allow_ne: false,
     allow_or: true,
     allow_hyphen_range: true,
@@ -144,6 +148,7 @@ pub fn Syntax::cargo() -> Syntax {
     tilde_bump: Patch,
     allow_caret: true,
     allow_tilde: true,
+    allow_tilde_arrow: false,
     allow_ne: false,
     allow_or: false,
     allow_hyphen_range: false,
@@ -155,7 +160,7 @@ pub fn Syntax::cargo() -> Syntax {
 
 ///|
 /// Ruby grammar: `~>` is the pessimistic operator (drop the last segment, then bump),
-/// and `!=` is allowed; no `^`, `||`, hyphen ranges or shorthand.
+/// and `!=` is allowed; no bare `~`, no `^`, `||`, hyphen ranges or shorthand.
 pub fn Syntax::ruby() -> Syntax {
   {
     allow_v_prefix: false,
@@ -165,7 +170,8 @@ pub fn Syntax::ruby() -> Syntax {
     default_op: Exact,
     tilde_bump: LastSpecified,
     allow_caret: false,
-    allow_tilde: true,
+    allow_tilde: false,
+    allow_tilde_arrow: true,
     allow_ne: true,
     allow_or: false,
     allow_hyphen_range: false,
@@ -265,6 +271,7 @@ pub impl Eq for Syntax with fn equal(self : Syntax, other : Syntax) -> Bool {
   self.tilde_bump == other.tilde_bump &&
   self.allow_caret == other.allow_caret &&
   self.allow_tilde == other.allow_tilde &&
+  self.allow_tilde_arrow == other.allow_tilde_arrow &&
   self.allow_ne == other.allow_ne &&
   self.allow_or == other.allow_or &&
   self.allow_hyphen_range == other.allow_hyphen_range &&

@@ -71,3 +71,19 @@ test "syntax: Show gives a readable summary" {
   assert_true(s.contains("or=false"))
   assert_true(s.contains("prerelease=same-tuple"))
 }
+
+///|
+test "syntax: tilde and tilde-arrow are separate switches" {
+  let npm = @moonsver.Syntax::npm()
+  let cargo = @moonsver.Syntax::cargo()
+  let ruby = @moonsver.Syntax::ruby()
+  // npm takes both spellings of a tilde range, with the same meaning
+  assert_true(npm.allow_tilde && npm.allow_tilde_arrow)
+  // Cargo has `~` only
+  assert_true(cargo.allow_tilde && !cargo.allow_tilde_arrow)
+  // Ruby has `~>` only
+  assert_true(!ruby.allow_tilde && ruby.allow_tilde_arrow)
+  // a custom mix keeps one of the two
+  let tilde_only : @moonsver.Syntax = { ..npm, allow_tilde_arrow: false, }
+  assert_eq(tilde_only.name(), None)
+}

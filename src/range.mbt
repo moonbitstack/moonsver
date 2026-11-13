@@ -349,7 +349,7 @@ fn detect_operator(cur : Cursor, syn : Syntax) -> TokenOp raise Refused {
       cur.bump()
       if cur.peek() == Some('>') {
         cur.bump()
-        if !(syn.allow_tilde && syn.tilde_bump == LastSpecified) {
+        if !syn.allow_tilde_arrow {
           fail(UnsupportedSyntax, "this grammar does not support '~>'", start)
         }
       } else if !syn.allow_tilde {

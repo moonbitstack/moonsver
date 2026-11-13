@@ -277,3 +277,36 @@ test "range: comparators and sets" {
   assert_true(range_ok("*").is_any())
   assert_false(r.is_any())
 }
+
+///|
+test "range: npm reads a tilde arrow as a tilde" {
+  expect_range("~>1.2.3", ">=1.2.3, <1.3.0")
+  expect_range("~> 1.2", ">=1.2.0, <1.3.0")
+  assert_true(sat("1.2.9", "~>1.2.3"))
+  assert_false(sat("1.3.0", "~>1.2.3"))
+}
+
+///|
+test "range: Ruby takes a tilde arrow and not a bare tilde" {
+  let ruby = @moonsver.Syntax::ruby()
+  expect_range("~> 1.2", ">=1.2.0, <2.0.0", syntax=ruby)
+  range_err("~1.2", syntax=ruby)
+  range_err("~1.2.3", syntax=ruby)
+}
+
+///|
+test "range: a grammar without a tilde arrow refuses one" {
+  range_err("~>1.2.3", syntax=@moonsver.Syntax::cargo())
+  range_err("~>1.2.3", syntax=@moonsver.Syntax::strict())
+}
+
+///|
+test "range: an exclusive bound under the Always policy" {
+  // `^1.2.3` ends at `<2.0.0`; a prerelease of 2.0.0 is still below that bound, so
+  // an explicit policy of Always lets it through. npm writes the bound as `2.0.0-0`
+  // to keep it out; this library leaves the choice to the policy.
+  let r = range_ok("^1.2.3")
+  assert_false(r.satisfies(parse_ok("2.0.0-alpha")))
+  assert_true(r.satisfies_with(parse_ok("2.0.0-alpha"), @moonsver.Always))
+  assert_false(r.satisfies_with(parse_ok("2.0.0"), @moonsver.Never))
+}

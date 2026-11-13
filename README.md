@@ -44,26 +44,27 @@ It exports as `@moonsver`. With the package manager, `moon add moonbitstack/moon
 ## Quick start
 
 ```moonbit
-fn demo() -> Unit raise @moonsver.Refused {
+fn demo() -> Unit raise {
   // Parse and print
   let v = @moonsver.Version::parse("1.2.3-alpha.1+build.5")
-  println(v.to_string())      // 1.2.3-alpha.1+build.5
-  println(v.core_string())    // 1.2.3
-  println(v.is_prerelease())  // true
+  assert_eq(v.to_string(), "1.2.3-alpha.1+build.5")
+  assert_eq(v.core_string(), "1.2.3")
+  assert_eq(v.is_prerelease(), true)
 
   // Precedence (§11; build metadata stays out of it)
   let a = @moonsver.Version::parse("1.0.0-alpha")
   let b = @moonsver.Version::parse("1.0.0")
-  println(a.precedence_cmp(b))  // -1
+  assert_eq(a.precedence_cmp(b), -1)
 
   // Ranges
   let r = @moonsver.Range::parse("^1.2.3")
-  println(r.to_string())        // >=1.2.3, <2.0.0
-  println(r.satisfies(@moonsver.Version::parse("1.9.0")))  // true
-  println(r.satisfies(@moonsver.Version::parse("2.0.0")))  // false
+  assert_eq(r.to_string(), ">=1.2.3, <2.0.0")
+  assert_eq(r.satisfies(@moonsver.Version::parse("1.9.0")), true)
+  assert_eq(r.satisfies(@moonsver.Version::parse("2.0.0")), false)
 
   // Bumps
-  println(@moonsver.Version::parse("1.2.3").inc(@moonsver.Major).to_string())  // 2.0.0
+  let next = @moonsver.Version::parse("1.2.3").inc(@moonsver.Major)
+  assert_eq(next.to_string(), "2.0.0")
 }
 ```
 
@@ -132,22 +133,23 @@ A version has one spelling in SemVer 2.0.0. Ranges are not in the spec, so diffe
 
 | Preset | A bare version means | `^` | `~` | `\|\|` | Hyphen | `1.x` | `!=` |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `Syntax::npm()` | exact | yes | yes | yes | yes | yes | no |
-| `Syntax::cargo()` | caret | yes | yes | no | no | yes | no |
-| `Syntax::ruby()` | exact | no | `~>` | no | no | no | yes |
+| `Syntax::npm()` | exact | yes | `~`, `~>` | yes | yes | yes | no |
+| `Syntax::cargo()` | caret | yes | `~` | no | no | yes | no |
+| `Syntax::ruby()` | exact | no | `~>` only | no | no | no | yes |
 | `Syntax::strict()` | exact | no | no | no | no | no | no |
 
 `Syntax::from_name("cargo")` and `name()` serve config files and the CLI. `Default` is the npm preset. You can also build a `Syntax` literal of your own.
 
 <details>
-<summary><b>All fourteen settings</b></summary>
+<summary><b>All fifteen settings</b></summary>
 
 | Field | What it controls |
 | --- | --- |
 | `default_op` | What a bare version means: `Exact`, `Caret` or `Tilde` |
-| `tilde_bump` | How `~` finds its upper bound: `Patch` or `LastSpecified` |
+| `tilde_bump` | Which segment `~` and `~>` bump: `Patch` or `LastSpecified` |
 | `allow_caret` | Accept `^` |
-| `allow_tilde` | Accept `~` (`~>` only under `LastSpecified`) |
+| `allow_tilde` | Accept `~` |
+| `allow_tilde_arrow` | Accept `~>` |
 | `allow_ne` | Accept `!=` |
 | `allow_or` | Accept `\|\|` |
 | `allow_hyphen_range` | Accept `1.2.3 - 2.0.0` |
@@ -221,8 +223,8 @@ A command exits `0` when it ran, even if the answer is `false` or nothing fits; 
 `Version` and `Range` implement `ToJson` / `FromJson`, serialised as strings, so they drop into config files and API responses:
 
 ```moonbit
-let j = @json.to_json(@moonsver.Range::parse("^1.2.3"))
-// Json::string(">=1.2.3, <2.0.0")
+let j : Json = Json(@moonsver.Range::parse("^1.2.3"))
+assert_eq(j.stringify(), "\">=1.2.3, <2.0.0\"")
 ```
 
 ## Examples
