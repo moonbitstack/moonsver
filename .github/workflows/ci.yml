@@ -77,3 +77,32 @@ jobs:
       - name: interfaces are up to date
         run: |
           moon info --target all && git diff --exit-code
+
+  # The vectors the tests replay are the output of node-semver and the Rust semver
+  # crate. This job reruns both references and fails when the committed copy differs,
+  # so a corpus that was hand-adjusted, or a reference that moved, cannot slip through.
+  conformance:
+    permissions:
+      contents: read
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: install moonbit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: the references are installed
+        run: |
+          node --version
+          npm --version
+          cargo --version
+
+      - name: regenerate the vectors from both references
+        run: python3 scripts/conformance/build_vectors.py
+
+      - name: the committed vectors are current
+        run: git diff --exit-code src/conformance_vectors_test.mbt

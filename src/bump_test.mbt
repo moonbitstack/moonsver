@@ -73,3 +73,16 @@ test "bump: parsing bump names" {
   assert_true(refused is Err(@moonsver.Unexpected(at=0, _)))
   assert_eq(@moonsver.Major.to_string(), "major")
 }
+
+///|
+test "bump: Stable leaves a stable version alone" {
+  assert_eq(parse_ok("1.2.3").inc(@moonsver.Stable).to_string(), "1.2.3")
+  assert_eq(
+    parse_ok("1.2.3+build.9").inc(@moonsver.Stable).to_string(),
+    "1.2.3",
+  )
+  assert_eq(
+    parse_ok("1.2.3-alpha.1+build").inc(@moonsver.Stable).to_string(),
+    "1.2.3",
+  )
+}

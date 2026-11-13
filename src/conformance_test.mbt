@@ -89,3 +89,144 @@ test "conformance: empty and any ranges" {
   assert_true(any.satisfies(parse_ok("99999999999999999999.0.0")))
   assert_false(any.satisfies(parse_ok("1.0.0-alpha")))
 }
+
+///|
+/// Replay the corpus generated in `conformance_vectors_test.mbt`. Its expectations come
+/// from node-semver and the Rust semver crate, not from this library.
+
+///|
+fn accepts_version(text : String, syntax : @moonsver.Syntax) -> Bool {
+  match attempt(() => @moonsver.Version::parse(text, syntax~)) {
+    Parsed(_) => true
+    Failed(_) => false
+  }
+}
+
+///|
+test "conformance: node-semver reads the same versions as the npm grammar" {
+  for row in npm_version_cases() {
+    let (text, want) = row
+    assert_eq(
+      accepts_version(text, @moonsver.Syntax::npm()),
+      want,
+      msg="npm grammar, \{text}",
+    )
+  }
+}
+
+///|
+test "conformance: the strict grammar reads the same versions as the spec" {
+  for row in strict_version_cases() {
+    let (text, want) = row
+    assert_eq(
+      accepts_version(text, @moonsver.Syntax::strict()),
+      want,
+      msg="strict grammar, \{text}",
+    )
+  }
+}
+
+///|
+test "conformance: precedence agrees with both references" {
+  for row in precedence_cases() {
+    let (a, b, want) = row
+    let got = parse_ok(a).precedence_cmp(parse_ok(b))
+    assert_eq(got, want, msg="\{a} against \{b}")
+  }
+}
+
+///|
+test "conformance: npm ranges match node-semver" {
+  for group in npm_range_cases() {
+    let (text, rows) = group
+    let range = match attempt(() => @moonsver.Range::parse(text)) {
+      Parsed(r) => r
+      Failed(e) => fail("npm reads \{text} but the library refused it: \{e}")
+    }
+    for row in rows {
+      let (version, want) = row
+      assert_eq(
+        range.satisfies(parse_ok(version)),
+        want,
+        msg="\{text} takes \{version}",
+      )
+    }
+  }
+  for text in npm_refused_ranges() {
+    match attempt(() => @moonsver.Range::parse(text)) {
+      Parsed(r) => fail("node-semver refuses \{text}, the library read \{r}")
+      Failed(_) => ()
+    }
+  }
+}
+
+///|
+test "conformance: Cargo requirements match the Rust crate" {
+  let cargo = @moonsver.Syntax::cargo()
+  for group in cargo_range_cases() {
+    let (text, rows) = group
+    let range = match
+      attempt(() => @moonsver.Range::parse(text, syntax=cargo)) {
+      Parsed(r) => r
+      Failed(e) => fail("Cargo reads \{text} but the library refused it: \{e}")
+    }
+    for row in rows {
+      let (version, want) = row
+      assert_eq(
+        range.satisfies(parse_ok(version)),
+        want,
+        msg="\{text} takes \{version}",
+      )
+    }
+  }
+  for text in cargo_refused_ranges() {
+    match attempt(() => @moonsver.Range::parse(text, syntax=cargo)) {
+      Parsed(r) => fail("Cargo refuses \{text}, the library read \{r}")
+      Failed(_) => ()
+    }
+  }
+}
+
+///|
+test "conformance: bumps match node-semver" {
+  for row in bump_cases() {
+    let (version, release, want) = row
+    let bump = match attempt(() => @moonsver.Release::parse(release)) {
+      Parsed(r) => r
+      Failed(e) => fail("unknown release \{release}: \{e}")
+    }
+    let got = Some(parse_ok(version).inc(bump).to_string())
+    assert_eq(got, want, msg="\{version}, \{release}")
+  }
+}
+
+///|
+/// The reference's own selection and ordering, over the same corpus.
+test "conformance: highest, lowest and order match node-semver" {
+  let pool : Array[@moonsver.Version] = []
+  for text in range_versions() {
+    pool.push(parse_ok(text))
+  }
+  for row in npm_extremes() {
+    let (text, high, low, sorted_names) = row
+    let range = match attempt(() => @moonsver.Range::parse(text)) {
+      Parsed(r) => r
+      Failed(e) => fail("npm reads \{text} but the library refused it: \{e}")
+    }
+    let got_high = match range.max_satisfying(pool) {
+      Some(v) => v.to_string()
+      None => "-"
+    }
+    let got_low = match range.min_satisfying(pool) {
+      Some(v) => v.to_string()
+      None => "-"
+    }
+    assert_eq(got_high, high, msg="highest for \{text}")
+    assert_eq(got_low, low, msg="lowest for \{text}")
+    let got : Array[String] = []
+    for v in range.satisfying(pool) {
+      got.push(v.to_string())
+    }
+    assert_eq(got, sorted_names, msg="sorted matches for \{text}")
+  }
+}
