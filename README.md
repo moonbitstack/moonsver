@@ -155,7 +155,7 @@ A version has one spelling in SemVer 2.0.0. Ranges are not in the spec, so diffe
 | `allow_hyphen_range` | Accept `1.2.3 - 2.0.0` |
 | `allow_xrange` | Accept `1.x`, `1.2.*` and bare `1.2` |
 | `allow_empty` | Treat an empty string as any version |
-| `allow_v_prefix` | Accept `v1.2.3` |
+| `allow_v_prefix` | Accept `v1.2.3`, and `V1.2.3` as well |
 | `allow_equals_prefix` | Accept `=1.2.3` as a version literal |
 | `allow_build_metadata` | Accept a `+build` segment |
 | `trim` | Allow whitespace around a version literal |
