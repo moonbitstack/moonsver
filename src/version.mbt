@@ -220,7 +220,9 @@ fn parse_number(cur : Cursor, what : String) -> @bigint.BigInt raise Refused {
   if text.length() > 1 && text.get_char(0) == Some('0') {
     fail(LeadingZero, "\{what} number has a leading zero: \{text}", start)
   }
-  @bigint.BigInt::from_string(text)
+  @string.parse_bigint(text) catch {
+    _ => fail(InvalidNumber, "\{what} number is not a number: \{text}", start)
+  }
 }
 
 ///|
@@ -293,7 +295,16 @@ fn parse_identifier(
         position,
       )
     }
-    Identifier::Num(@bigint.BigInt::from_string(text))
+    Identifier::Num(
+      @string.parse_bigint(text) catch {
+        _ =>
+          fail(
+            InvalidNumber,
+            "numeric identifier is not a number: \{text}",
+            position,
+          )
+      },
+    )
   } else {
     Identifier::Alpha(text)
   }
@@ -354,7 +365,11 @@ fn compare_build_identifier(a : String, b : String) -> Int32 {
   let an = is_canonical_number(a)
   let bn = is_canonical_number(b)
   if an && bn {
-    @bigint.BigInt::from_string(a).compare(@bigint.BigInt::from_string(b))
+    if a.length() != b.length() {
+      a.length().compare(b.length())
+    } else {
+      a.compare(b)
+    }
   } else if an {
     -1
   } else if bn {

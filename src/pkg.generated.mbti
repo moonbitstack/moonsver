@@ -127,7 +127,7 @@ pub struct Range {
 }
 pub fn Range::any() -> Self
 pub fn Range::equal(Self, Self) -> Bool
-pub fn Range::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Range::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn Range::is_any(Self) -> Bool
 pub fn Range::max_satisfying(Self, Array[Version]) -> Version?
 pub fn Range::min_satisfying(Self, Array[Version]) -> Version?
@@ -218,7 +218,7 @@ pub fn Version::core(Self) -> Self
 pub fn Version::core_string(Self) -> String
 pub fn Version::equal(Self, Self) -> Bool
 pub fn Version::from_bigint(@bigint.BigInt, @bigint.BigInt, @bigint.BigInt) -> Self
-pub fn Version::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Version::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn Version::hash(Self) -> Int32
 pub fn Version::hash_combine(Self, Hasher) -> Unit
 pub fn Version::inc(Self, Release) -> Self
